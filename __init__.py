@@ -24,23 +24,12 @@ bl_info = {
 
 import bpy
 from bpy import context as context
-
+from . ff_model import MyPropertyGroup
 from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FF_PT_Model
 from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
 
-def UpdatedFunction(self, context):
-    print ("here")
-    print (context)
-    print (self.custom_String)
-    return
-# from . ff_model import MyPropertyGroup
 
-class MyPropertyGroup(bpy.types.PropertyGroup):
-    custom_String = bpy.props.StringProperty(name ="My String",default='django',update=UpdatedFunction)
-    custom_Boolean = bpy.props.BoolProperty(update = UpdatedFunction)
-
-bpy.utils.register_class(MyPropertyGroup)
 
 # VARIABLES - globals for GUI button presses
 bpy.types.Scene.ff_general = bpy.props.BoolProperty(default=False)

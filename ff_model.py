@@ -116,3 +116,18 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row = col2.row(align = True)
         row.prop(bpy.context.scene.my_prop_grp,"custom_String",text="filter")
         row.prop(bpy.context.scene.my_prop_grp,"custom_Boolean",text="cb")
+
+
+def UpdatedFunction(self, context):
+    print ("here")
+    # print (context)
+    print (self.custom_String)
+    print (context.scene.ff_skFilter)
+    return
+# from . ff_model import MyPropertyGroup
+
+class MyPropertyGroup(bpy.types.PropertyGroup):
+    custom_String = bpy.props.StringProperty(name ="My String",default='django',update=UpdatedFunction)
+    custom_Boolean = bpy.props.BoolProperty(update = UpdatedFunction)
+
+bpy.utils.register_class(MyPropertyGroup)
