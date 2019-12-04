@@ -87,7 +87,7 @@ class FfPollGen():
     @classmethod
     def poll(cls, context):
         return(context.scene.ff_general == True)
-# class FF_PT_Model(bpy.types.Panel):
+
 class FF_PT_Model(FfPollGen, bpy.types.Panel):
     bl_idname = "FF_PT_Model"
     bl_label = "Miscellaneous"
@@ -109,5 +109,10 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         col2 = box_rg.column(align = True)
         col2.label(text='Shapekey Helpers')
         row = col2.row(align = True)
-        row.operator("ffgen.select_half", text="Zero All")
+        row.prop(bpy.context.scene,"ff_skFilter",text="filter")
+        row = col2.row(align = True)
+        row.operator("ffgen.re_mirror", text="Zero All")
         row.operator("ffgen.re_mirror", text="Animate All")
+        row = col2.row(align = True)
+        row.prop(bpy.context.scene.my_prop_grp,"custom_String",text="filter")
+        row.prop(bpy.context.scene.my_prop_grp,"custom_Boolean",text="cb")
