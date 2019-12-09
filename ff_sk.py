@@ -50,24 +50,54 @@ def addDriversToShapeKeys():
 # def getShapesByValue():
 #     pass
 
-class TestShapeKeyOperator(bpy.types.Operator):
-    bl_idname = "ffsko.testshapekey"
-    bl_label = "ffsko_TestShapeKey"
+class SkZeroAll_OT_Operator (bpy.types.Operator):
+    '''Reset All Shapekey values to zero'''
+    bl_idname = "ffgen.sk_zero_all"
+    bl_label = "ffgen_SkZeroAll"
+    bl_options =  {"REGISTER","UNDO"}
 
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if (context.active_object.data.shape_keys !='None'):
+                return (1)
+        else:
+            return(0)
     def execute(self, context):
-        print ("hi")
-        return {'FINISHED'}
+        obj = context.object
+        sk = obj.data.shape_keys
+        if sk :
+            skb = sk.key_blocks
+            print ("Shape Key Blocks %s"% len(skb))
+            for i in range(1,len(skb)):
+                skb[i].value = 0
+            self.report({'INFO'}, "Done")
+        else :
+            self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}
 
+class SkAnimateAll_OT_Operator (bpy.types.Operator):
+    '''Reset All Shapekey values to zero'''
+    bl_idname = "ffgen.sk_zero_all"
+    bl_label = "ffgen_SkZeroAll"
+    bl_options =  {"REGISTER","UNDO"}
 
-class FF_PT_ShapeKeys(bpy.types.Panel):
-    bl_idname = "FF_PT_ShapeKeys"
-    bl_label = "Shapekey Functions"
-    bl_category = "FF_Tools"
-    bl_space_type = "VIEW_3D"
-    bl_region_type = "UI"
-
-    def draw(self, context):
-        layout = self.layout
-
-        row = layout.row()
-        row.operator ('ffsko.testshapekey', text="Print Shapekeys")
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if (context.active_object.data.shape_keys !='None'):
+                return (1)
+        else:
+            return(0)
+    def execute(self, context):
+        obj = context.object
+        sk = obj.data.shape_keys
+        if sk :
+            skb = sk.key_blocks
+            print ("Shape Key Blocks %s"% len(skb))
+            for i in range(1,len(skb)):
+                skb[i].value = 0
+            self.report({'INFO'}, "Done")
+        else :
+            self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}

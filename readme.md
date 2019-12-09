@@ -17,4 +17,18 @@
 ### Todos
 - shapekeys to bones binding (driver setup)
     - useful for animating face, while posing rigify controls
-- facecap to rigify
+
+## FaceCap To Rigify
+- Loader JSON - milestone
+    - as is (key / rig) - restore
+    - filter drivers ( by key, object ) / print results
+    - connect selected tweaking key or object selection etc
+
+
+# TODOS
+
+- shapekey polling
+- shapekey zeroAll
+- shapekey animateAll
+- shapekey bind all to Skeleton
+- shapekey filter to selected joint
