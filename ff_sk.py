@@ -59,7 +59,7 @@ class SkZeroAll_OT_Operator (bpy.types.Operator):
     @classmethod
     def poll(cls,context):
         if context.area.type=='VIEW_3D':
-            if (context.active_object.data.shape_keys !='None'):
+            if (context.active_object.type=='MESH') and (context.active_object.data.shape_keys !='None'):
                 return (1)
         else:
             return(0)
@@ -78,14 +78,14 @@ class SkZeroAll_OT_Operator (bpy.types.Operator):
 
 class SkAnimateAll_OT_Operator (bpy.types.Operator):
     '''Reset All Shapekey values to zero'''
-    bl_idname = "ffgen.sk_zero_all"
-    bl_label = "ffgen_SkZeroAll"
+    bl_idname = "ffgen.sk_animate_all"
+    bl_label = "ffgen_SkAnimateAll"
     bl_options =  {"REGISTER","UNDO"}
 
     @classmethod
     def poll(cls,context):
         if context.area.type=='VIEW_3D':
-            if (context.active_object.data.shape_keys !='None'):
+            if  (context.active_object.type=='MESH') and (context.active_object.data.shape_keys !='None'):
                 return (1)
         else:
             return(0)
@@ -97,6 +97,11 @@ class SkAnimateAll_OT_Operator (bpy.types.Operator):
             print ("Shape Key Blocks %s"% len(skb))
             for i in range(1,len(skb)):
                 skb[i].value = 0
+                skb[i].keyframe_insert("value",frame=i-1)
+                skb[i].value = 1
+                skb[i].keyframe_insert("value",frame=i)
+                skb[i].value = 0
+                skb[i].keyframe_insert("value",frame=i+1)
             self.report({'INFO'}, "Done")
         else :
             self.report({'INFO'}, "Select some mesh object")

@@ -1,7 +1,7 @@
 import bpy
 
 from bpy import context as context
-from . ff_sk import SkZeroAll_OT_Operator
+from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator
 
 class SelectHalfMesh_OT_Operator (bpy.types.Operator):
     '''Select half mesh vertices'''
@@ -112,7 +112,7 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row.prop(bpy.context.scene,"ff_skFilter",text="filter")
         row = col2.row(align = True)
         row.operator("ffgen.sk_zero_all", text="Zero All")
-        row.operator("ffgen.re_mirror", text="Animate All")
+        row.operator("ffgen.sk_animate_all", text="Animate All")
         row = col2.row(align = True)
         row.prop(bpy.context.scene.my_prop_grp,"custom_String",text="filter")
         row.prop(bpy.context.scene.my_prop_grp,"custom_Boolean",text="cb")

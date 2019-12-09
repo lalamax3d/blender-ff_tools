@@ -29,7 +29,7 @@ from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FF_PT_M
 from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
 
-from . ff_sk import SkZeroAll_OT_Operator
+from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator
 
 # VARIABLES - globals for GUI button presses
 bpy.types.Scene.ff_general = bpy.props.BoolProperty(default=False)
@@ -64,7 +64,7 @@ class FF_PT_Panel(bpy.types.Panel):
 
 classes = (
         SelectHalfMesh_OT_Operator,ReMirror_OT_Operator,
-        SkZeroAll_OT_Operator,
+        SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,
         UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator,
         exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator,
         CopyIkArms_OT_Operator, CopyIklegs_OT_Operator,

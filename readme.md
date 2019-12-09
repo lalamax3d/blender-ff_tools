@@ -1,20 +1,30 @@
+## Table of contents
+* [General info](#general-info)
+* [Installation](#installation)
+* [Modeling](#modeling)
+* [Rigging](#rigging)
+* [Animation](#animation)
+<img style="float: right;" src="./screenshots/wip_2019_12_10.jpg">
+## General info
+This project is collection of small blender operators, i created for myself while working, compiled as one single addon.
+
 ## Installation
+Just download src and proceed like any other addon installation.
 
-## Usage
 
-### Modeling
+## Modeling
 - select half mesh (using object pivot local x axis)
 - re-mirror half, actually delete half and apply mirror
 
-### Rigging
+## Rigging
 - selected pose bones to use euler rotations
 - remove one sided widgets in rigify, less work :)
 
 
-### Animation
+## Animation
 
 
-### Todos
+## Todos
 - shapekeys to bones binding (driver setup)
     - useful for animating face, while posing rigify controls
 
@@ -27,8 +37,5 @@
 
 # TODOS
 
-- shapekey polling
-- shapekey zeroAll
-- shapekey animateAll
 - shapekey bind all to Skeleton
 - shapekey filter to selected joint
