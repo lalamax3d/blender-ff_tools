@@ -140,7 +140,7 @@ def UpdatedFunction(self, context):
 # from . ff_model import MyPropertyGroup
 
 class FfModelingPropGrp(bpy.types.PropertyGroup):
-    sk_filterStr = bpy.props.StringProperty(name ="Empty Filter will bind all shapekeys to selected Bone",default='',update=UpdatedFunction)
+    sk_filterStr = bpy.props.StringProperty(name ="Empty Filter will bind all shapekeys to selected Bone \nAfter changing filter text, hit enter key to refresh",default='',update=UpdatedFunction)
     # custom_Boolean = bpy.props.BoolProperty(update = UpdatedFunction)
 
 bpy.utils.register_class(FfModelingPropGrp)

@@ -42,8 +42,32 @@ def addDriversToShapeKeys():
 
 #addPropsInPbone()
 #addDriversToShapeKeys()
+def isShapeKeyAnimated(sk,attr):
+    #sk = obj.data.shape_keys
+    skad = sk.animation_data
+    if skad is not None and skad.action is not None:
+        for fcu in skad.action.fcurves:
+            if attr in fcu.data_path :
+                return True
+    return False
 
-
+def isShapeKeyDriven(sk,attr):
+    #sk = obj.data.shape_keys
+    skad = sk.animation_data
+    skdr = skad.drivers
+    if skdr is not None and len(skdr)>0:
+        for each in skdr:
+            if attr in each.data_path :
+                return True
+    return False 
+def removeShapeKeyDriver(sk,attr):
+    if isShapeKeyDriven(sk,attr):
+        data_path = "key_blocks[\"" + attr + "\"].value"
+        # sk.driver_remove('key_blocks["eye.L"].value')
+        sk.driver_remove(data_path)
+def removeShapeKeyDrivers():
+    pass
+        
 class SkZeroAll_OT_Operator (bpy.types.Operator):
     '''Reset All Shapekey values to zero'''
     bl_idname = "ffgen.sk_zero_all"
@@ -102,7 +126,7 @@ class SkAnimateAll_OT_Operator (bpy.types.Operator):
         return{"FINISHED"}
 
 class SkBindToBone_OT_Operator (bpy.types.Operator):
-    '''Create shapekey name property in selected pose bone and set expression on shapekey'''
+    '''1- Select Mesh with Shapekeys\n2- Select Control Object(Armature Pose Bone)\n This action will Create property on pbone (shapekey name)\n Then Bind shapekey via expression to relevant property'''
     bl_idname = "ffgen.sk_bind_to_bone"
     bl_label = "ffgen_SkBindToBone"
     bl_options =  {"REGISTER","UNDO"}
@@ -110,7 +134,7 @@ class SkBindToBone_OT_Operator (bpy.types.Operator):
     @classmethod
     def poll(cls,context):
         if context.area.type=='VIEW_3D':
-            if  (len(context.selected_objects)==2) and (context.selected_object[0].type=='MESH') and (context.active_object.type =='ARMATURE'):
+            if  (len(context.selected_objects)==2) and (context.selected_objects[0].type=='MESH') and (context.active_object.type =='ARMATURE'):
                 return (1)
         else:
             return(0)
@@ -121,9 +145,33 @@ class SkBindToBone_OT_Operator (bpy.types.Operator):
         sk = skSrcObj.data.shape_keys
         if sk :
             skb = sk.key_blocks
-            print ("Shape Key Blocks %s"% len(skb))
+            print ("Shape Keys Count:",len(skb))
             fs = bpy.context.scene.ff_model_prop_grp.sk_filterStr
-            
+            print ("FILTER STRING:",fs)
+            for i in range(1,len(skb)):
+                skn=skb[i].name
+                # print ("CHECKING..", skn)
+                if (skn.find(fs)!= -1):
+                    # PROCESS STEPS
+                    # 1- if already driven, clean this
+                    removeShapeKeyDriver(sk,skn) # safety step
+                    # 2- if property doesn't exist create this
+                    pbone[skn]=0.0 #
+                    # 3- setup driver
+                    data_path = "key_blocks[\"" + skn + "\"].value"
+                    print (data_path)
+                    dr = skSrcObj.data.shape_keys.driver_add(data_path)
+                    dr.driver.type='SCRIPTED'
+
+                    var = dr.driver.variables.new()
+                    var.type = 'SINGLE_PROP'
+                    # var.name = var
+                    var.targets[0].id_type = 'OBJECT'
+                    var.targets[0].id = armObj
+                    var.targets[0].data_path = "pose.bones[\""+pbone.name+"\"][\""+ skn +"\"]"
+                    print (var.targets[0].data_path)
+                    dr.driver.expression = "var"
+                    # 4- TODO ideally if already animated, data should be saved by moving to property
             self.report({'INFO'}, "Done")
         else :
             self.report({'INFO'}, "No ShapeKeys Found")
