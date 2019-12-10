@@ -4,7 +4,7 @@
 * [Modeling](#modeling)
 * [Rigging](#rigging)
 * [Animation](#animation)
-<img style="float: right;" src="./screenshots/wip_2019_12_10.jpg">
+<img style="float: right;" src="./screenshots/wip_2019_12_11.jpg">
 ## General info
 This project is collection of small blender operators, i created for myself while working, compiled as one single addon.
 
