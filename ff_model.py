@@ -1,7 +1,7 @@
 import bpy
 
 from bpy import context as context
-from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator
+from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_OT_Operator
 
 class SelectHalfMesh_OT_Operator (bpy.types.Operator):
     '''Select half mesh vertices'''
@@ -95,8 +95,15 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 
+    testValue = 5
+    
     def draw(self, context):
-        active_obj = context.active_object
+        skSrcObj = context.selected_objects[0]
+        sk = skSrcObj.data.shape_keys
+        skb = 0
+        if sk:
+            skb = sk.key_blocks
+            skb = len(skb) - 1
         layout = self.layout
 
         # Modeling
@@ -109,25 +116,31 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         col2 = box_rg.column(align = True)
         col2.label(text='Shapekey Helpers')
         row = col2.row(align = True)
-        row.prop(bpy.context.scene,"ff_skFilter",text="filter")
-        row = col2.row(align = True)
         row.operator("ffgen.sk_zero_all", text="Zero All")
         row.operator("ffgen.sk_animate_all", text="Animate All")
+        # row = col2.row(align = True)
+        # row.prop(bpy.context.scene,"ff_skFilter",text="filter")
+        col2 = box_rg.column(align = True)
+        col2.label(text='Bind Shapekeys To Bones(Classic)')
         row = col2.row(align = True)
-        row.prop(bpy.context.scene.my_prop_grp,"custom_String",text="filter")
-        row.prop(bpy.context.scene.my_prop_grp,"custom_Boolean",text="cb")
+        row.prop(bpy.context.scene.ff_model_prop_grp,"sk_filterStr",text="filter")
+        row = col2.row(align = True)
+        row.label(text="Info: %s Shapekeys Count:%s"%(skSrcObj.name,skb))
+        row = col2.row(align = True)
+        row.label(text="Info2: %s "%(self.testValue))
+        row = col2.row(align = True)
+        row.operator("ffgen.sk_bind_to_bone", text="Bind Shapekeys")
 
 
 def UpdatedFunction(self, context):
-    print ("here")
-    # print (context)
-    print (self.custom_String)
-    print (context.scene.ff_skFilter)
+    print ("Updating Function")
+    print (self.sk_filterStr)
+    FF_PT_Model.testValue = self.sk_filterStr
     return
 # from . ff_model import MyPropertyGroup
 
-class MyPropertyGroup(bpy.types.PropertyGroup):
-    custom_String = bpy.props.StringProperty(name ="My String",default='django',update=UpdatedFunction)
-    custom_Boolean = bpy.props.BoolProperty(update = UpdatedFunction)
+class FfModelingPropGrp(bpy.types.PropertyGroup):
+    sk_filterStr = bpy.props.StringProperty(name ="Empty Filter will bind all shapekeys to selected Bone",default='',update=UpdatedFunction)
+    # custom_Boolean = bpy.props.BoolProperty(update = UpdatedFunction)
 
-bpy.utils.register_class(MyPropertyGroup)
+bpy.utils.register_class(FfModelingPropGrp)
