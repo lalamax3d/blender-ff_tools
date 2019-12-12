@@ -6,27 +6,54 @@ from bpy import context as context
 def keySelection(step):
     ''' reduces key on selectedBone by step '''
     obj = bpy.context.object
-    bone = bpy.context.active_pose_bone
-    action = obj.animation_data.action
-
-    grp = action.groups[bone.name]
-
-    # deselect all keyframes
-    #bpy.ops.graph.select_all_toggle(invert=False)
-
-    for chan in grp.channels:
-        kfs = chan.keyframe_points
-        #for kf in kfs:
-            #print (kf.co[0])
-        for i in range(0,len(kfs)):
-            if i % step == 0:
-                kfs[i].select_control_point = False
-                #print (kfs[i].co[0])
-            else:
-                kfs[i].select_control_point = True
-
-
-        #bpy.ops.graph.delete()
+    # try to get action keys 
+    if obj.type == 'ARMATURE':
+        bone = bpy.context.active_pose_bone
+        action = obj.animation_data.action
+        grp = action.groups[bone.name]
+        # deselect all keyframes
+        #bpy.ops.graph.select_all_toggle(invert=False)
+        for chan in grp.channels:
+            kfs = chan.keyframe_points
+            #for kf in kfs:
+                #print (kf.co[0])
+            for i in range(0,len(kfs)):
+                if i % step == 0:
+                    kfs[i].select_control_point = False
+                    #print (kfs[i].co[0])
+                else:
+                    kfs[i].select_control_point = True
+    if obj.type == 'MESH' and obj.data.shape_keys != None:
+        action = obj.data.shape_keys.animation_data.action   
+        for g in action.groups:
+            for c in g.channels:
+                kfs = c.keyframe_points
+                #for kf in kfs:
+                    #print (kf.co[0])
+                for i in range(0,len(kfs)):
+                    if i % step == 0:
+                        kfs[i].select_control_point = False
+                        #print (kfs[i].co[0])
+                    else:
+                        kfs[i].select_control_point = True
+    
+    # try normal objects selection 
+    objs = obj = bpy.context.selected_objects
+    for obj in objs:
+        if obj.animation_data.action:
+            action = obj.animation_data.action
+            for g in action.groups:
+                for c in g.channels:
+                    kfs = c.keyframe_points
+                    #for kf in kfs:
+                        #print (kf.co[0])
+                    for i in range(0,len(kfs)):
+                        if i % step == 0:
+                            kfs[i].select_controal_point = False
+                            #print (kfs[i].co[0])
+                        else:
+                            kfs[i].select_control_point = True
+            #bpy.ops.graph.delete()
 
     # chan.keyframe_delete(chan.data_path,index=-1,frame = bpy.context.scene.frame_current,group = grp.name)
     # i checked later on and below works on selected bone, current time
@@ -153,7 +180,7 @@ class KeySelectionOp_OT_Operator (bpy.types.Operator):
     @classmethod
     def poll(cls,context):
         if context.area.type=='VIEW_3D':
-            if ( (context.object) and context.object.type =="ARMATURE" and context.object.mode == "POSE" and context.selected_pose_bones):
+            if (context.object):
                 return (1)
         else:
             return(0)
