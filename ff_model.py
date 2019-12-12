@@ -95,15 +95,16 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 
-    testValue = 5
+    # testValue = 5
     
     def draw(self, context):
         skSrcObj = context.selected_objects[0]
-        sk = skSrcObj.data.shape_keys
         skb = 0
-        if sk:
-            skb = sk.key_blocks
-            skb = len(skb) - 1
+        if skSrcObj.type == 'MESH':
+            sk = skSrcObj.data.shape_keys
+            if sk:
+                skb = sk.key_blocks
+                skb = len(skb) - 1
         layout = self.layout
 
         # Modeling
@@ -126,8 +127,8 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row.prop(bpy.context.scene.ff_model_prop_grp,"sk_filterStr",text="filter")
         row = col2.row(align = True)
         row.label(text="Info: %s Shapekeys Count:%s"%(skSrcObj.name,skb))
-        row = col2.row(align = True)
-        row.label(text="Info2: %s "%(self.testValue))
+        # row = col2.row(align = True)
+        # row.label(text="Info2: %s "%(self.testValue))
         row = col2.row(align = True)
         row.operator("ffgen.sk_bind_to_bone", text="Bind Shapekeys")
 
@@ -135,7 +136,7 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
 def UpdatedFunction(self, context):
     print ("Updating Function")
     print (self.sk_filterStr)
-    FF_PT_Model.testValue = self.sk_filterStr
+    # FF_PT_Model.testValue = self.sk_filterStr
     return
 # from . ff_model import MyPropertyGroup
 

@@ -39,6 +39,7 @@ def getDriversInfo():
                     vd['transform_type'] = target.transform_type
                     if 'ROT' in target.transform_type:
                         vd['rotation_mode'] = target.rotation_mode
+                    vd['data_path'] = target.data_path # not sure, where its used
                 item.append(vd)
             data.append(item)
     return data
@@ -83,15 +84,15 @@ def setupDriver(dd):
                 var.targets[0].data_path = vd['data_path']
         elif var.type == 'TRANSFORMS':
             # in this case id_type is always OBJECT
-            var.targets[0].id_type = vd["id_type"]
+            # var.targets[0].id_type = vd["id_type"]
             idv = vd['id'].split('"')[1]
             objects = bpy.data.objects
             obj = objects[idv]
             var.targets[0].id = obj
-            var.targets[0].transform_space
-            var.targets[0].transform_type
-            # if transform type is rot then also load rotation_mode
-            var.targets[0].rotation_mode
+            var.targets[0].transform_space = vd['transform_space']
+            var.targets[0].transform_type = vd['transform_type']
+            if 'ROT' in var.targets[0].transform_type:
+                var.targets[0].rotation_mode = vd['rotation_mode']
             #var.targets[0].data_path = vd['data_path']
         
     d.driver.type = dd[4] # set to scripted etc
@@ -156,3 +157,8 @@ def getBoneDrivers(pbone):
         
 # PROCESS
 # save json ( best config )
+
+#BEFORE
+# TODO EYES JAW ORIENT EULER
+# TODO BS is KEY
+# TODO PROP VALUES TUNING
