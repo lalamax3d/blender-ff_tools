@@ -25,17 +25,23 @@ def getDriversInfo():
             for v in allVars:
                 vd = {}
                 vd['name'] = v.name
-                vd['type'] = v.type
-                for target in v.targets:
+                vd['type'] = v.type # SINGLE PROPERTY | TRANFORMS
+                if v.type == 'SINGLE_PROP': # always one target (as of now)
+                    target = v.targets[0]
                     vd['id_type'] = target.id_type # KEY
                     vd['id'] = str(target.id)
                     vd['data_path'] = target.data_path
+                if v.type == 'TRANSFORMS':
+                    target = v.targets[0]
+                    vd['id_type'] = target.id_type # mostly object here
+                    vd['id'] = str(target.id)
+                    vd['transform_space'] = target.transform_space
+                    vd['transform_type'] = target.transform_type
+                    if 'ROT' in target.transform_type:
+                        vd['rotation_mode'] = target.rotation_mode
                 item.append(vd)
             data.append(item)
     return data
-
-
-
 
 def exportDriversToJson():
     import json,os
@@ -45,9 +51,8 @@ def exportDriversToJson():
     with open(outfile, 'w', encoding='utf-8') as f:
         json.dump(list(data), f,  ensure_ascii=False, indent=4)
 
-
-
 def setupDriver(dd):
+    #TODO , make sure, ROtation is Euler XYZ
     o = bpy.context.active_object
     # get bone by name
     bone = o.pose.bones.get(dd[0])
@@ -60,13 +65,35 @@ def setupDriver(dd):
         print (i, '\t', vd)
         var = d.driver.variables.new()
         var.name = vd['name']
-        var.type = vd['type']
-        var.targets[0].id_type = vd["id_type"] # KEY , TODO: can be object
-        idv = vd['id'].split('"')[1]
-        allKeys = bpy.data.shape_keys
-        sk = allKeys[idv]
-        var.targets[0].id = sk
-        var.targets[0].data_path = vd['data_path']
+        var.type = vd['type'] # SINGLE_PROP OR TRANFORMS
+        # depending on above type, process is different
+        if var.type == 'SINGLE_PROP':
+            var.targets[0].id_type = vd["id_type"] # KEY , TODO: can be object
+            if var.targets[0].id_type == 'KEY' :    
+                idv = vd['id'].split('"')[1]
+                allKeys = bpy.data.shape_keys
+                sk = allKeys[idv]
+                var.targets[0].id = sk
+                var.targets[0].data_path = vd['data_path']
+            elif var.targets[0].id_type == 'OBJECT' :
+                idv = vd['id'].split('"')[1]
+                objects = bpy.data.objects
+                obj = objects[idv]
+                var.targets[0].id = obj
+                var.targets[0].data_path = vd['data_path']
+        elif var.type == 'TRANSFORMS':
+            # in this case id_type is always OBJECT
+            var.targets[0].id_type = vd["id_type"]
+            idv = vd['id'].split('"')[1]
+            objects = bpy.data.objects
+            obj = objects[idv]
+            var.targets[0].id = obj
+            var.targets[0].transform_space
+            var.targets[0].transform_type
+            # if transform type is rot then also load rotation_mode
+            var.targets[0].rotation_mode
+            #var.targets[0].data_path = vd['data_path']
+        
     d.driver.type = dd[4] # set to scripted etc
     d.driver.expression = dd[3] # set expression
     print ("DONE")
@@ -77,6 +104,10 @@ def importDriversFromJson():
     infile = os.path.join(desktop,'data.json')
     with open(infile) as json_data:
         d = json.load(json_data)
+    # data is here
+    # 1 - create properties and create on bones
+    createBasicPropertiesFromJson(d)
+    # make sure, they are euler
     for each in d:
         setupDriver(each)
 
@@ -113,5 +144,15 @@ def createBasicPropertiesFromJson(jsondata):
         p = d[-2]
         createBoneProp(b,p)
 
+def getBoneDrivers(pbone):
+    obj = bpy.context.object
+    drvs = obj.animation_data.drivers
+    dlist = []
+    for each in drvs:
+        dp = each.data_path
+        if pbone.name in dp:
+            dlist.append(each)
+    return dlist
+        
 # PROCESS
 # save json ( best config )
