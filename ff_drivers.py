@@ -132,11 +132,15 @@ def importDriversFromJson():
     with open(infile) as json_data:
         d = json.load(json_data)
     # data is here
-    # 1 - create properties and create on bones
-    createBasicPropertiesFromJson(d)
-    # make sure, they are euler
-    for each in d:
+    drivers = d['drivers']
+    props = d['properties']
+    # print (len(drivers))
+    # print (len(props))
+    createBasicPropertiesFromJson(drivers)
+    for each in drivers:
         setupDriver(each)
+    # loading values
+    loadPropertyValuesFromJson(props)
 
 # exportDriversToJson()
 # importDriversFromJson()
@@ -170,7 +174,15 @@ def createBasicPropertiesFromJson(jsondata):
         b = d[1]
         p = d[-2]
         createBoneProp(b,p)
-
+def loadPropertyValuesFromJson(props):
+    o = bpy.context.active_object #assuming rig
+    for each in props:
+        b = each[0]
+        p = each[1]
+        v = each[2]
+        bone = o.pose.bones.get(b)
+        if bone.get(p):
+            bone[p] = v #loading value in prop
 def getBoneDrivers(pbone):
     obj = bpy.context.object
     drvs = obj.animation_data.drivers

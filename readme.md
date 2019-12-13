@@ -2,9 +2,13 @@
 * [General info](#general-info)
 * [Installation](#installation)
 * [Modeling](#modeling)
+* [Shapekeys](#shapekeys)
 * [Rigging](#rigging)
 * [Animation](#animation)
-<img style="float: right;" src="./screenshots/wip_2019_12_11.jpg">
+
+<p align="right">
+    <img style="float: right;" src="./screenshots/wip_2019_12_11.jpg">
+</p>
 ## General info
 This project is collection of small blender operators, i created for myself while working, compiled as one single addon.
 
@@ -33,16 +37,8 @@ Just download src and proceed like any other addon installation.
 
 
 ## Animation
-
-
-## Todos
-
-
-## FaceCap To Rigify
-- Loader JSON - milestone
-    - as is (key / rig) - restore
-    - filter drivers ( by key, object ) / print results
-    - connect selected tweaking key or object selection etc
+- key selection after n per object
+    - very helpful for selecting keyframes 
 
 
 # TODOS

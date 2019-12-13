@@ -40,7 +40,7 @@ def keySelection(step):
     # try normal objects selection 
     objs = obj = bpy.context.selected_objects
     for obj in objs:
-        if obj.animation_data.action != None:
+        if obj.animation_data != None:
             action = obj.animation_data.action
             for g in action.groups:
                 for c in g.channels:
