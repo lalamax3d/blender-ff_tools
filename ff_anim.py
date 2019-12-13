@@ -40,7 +40,7 @@ def keySelection(step):
     # try normal objects selection 
     objs = obj = bpy.context.selected_objects
     for obj in objs:
-        if obj.animation_data.action:
+        if obj.animation_data.action != None:
             action = obj.animation_data.action
             for g in action.groups:
                 for c in g.channels:
@@ -49,7 +49,7 @@ def keySelection(step):
                         #print (kf.co[0])
                     for i in range(0,len(kfs)):
                         if i % step == 0:
-                            kfs[i].select_controal_point = False
+                            kfs[i].select_control_point = False
                             #print (kfs[i].co[0])
                         else:
                             kfs[i].select_control_point = True

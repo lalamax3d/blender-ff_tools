@@ -48,9 +48,35 @@ def exportDriversToJson():
     import json,os
     desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
     outfile = os.path.join(desktop,'data.json')
-    data = getDriversInfo()
+    driversData = getDriversInfo()
+    # COLLECTING PROPERTIES
+    properties = []
+    for each in driversData:
+        for i in range(5,len(each)):
+            vd = each[i]
+            dp = vd['data_path']
+            if dp.find('pose') != -1:
+                print (each[0],vd['data_path'])
+                properties.append(vd['data_path'])
+    properties = list(set(properties))
+    # ITERATING OVER TO GET VALUES
+    propData=[]
+    o = bpy.context.active_object
+    for each in properties:
+        d = each.split('"')
+        bone = d[1]
+        prop = d[-2]
+        b = o.pose.bones.get(bone)
+        print ("FINDING BONE:",bone)
+        if b.get(prop):
+            print ("FINDING PROP:",prop)
+            v = round (b[prop],4)
+            propData.append((bone,prop,v))
+    print ("PROP DATA:", propData)
+    finalData = {"drivers":driversData, "properties":propData}
     with open(outfile, 'w', encoding='utf-8') as f:
-        json.dump(list(data), f,  ensure_ascii=False, indent=4)
+        # json.dump(list(driversData), f,  ensure_ascii=False, indent=4)
+        json.dump(finalData, f,  ensure_ascii=False, indent=2)
 
 def setupDriver(dd):
     #TODO , make sure, ROtation is Euler XYZ
