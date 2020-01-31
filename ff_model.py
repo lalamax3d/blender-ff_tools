@@ -1,7 +1,25 @@
 import bpy
-
+import os
 from bpy import context as context
 from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_OT_Operator
+
+
+def isTexIssue(texImage):
+    ''' texImage is actually node
+    function will return True if files doesn't exists on disk
+    '''
+    #filepath = texImage.image.filepath
+    #filename = texImage.image.name
+    if texImage.image != None:
+        actualFile = bpy.path.abspath(texImage.image.filepath)
+        if not os.path.exists(actualFile):
+            return True
+        else:
+            return False
+        #directory = os.path.dirname(actualFile)
+        #basefile = os.path.basename(actualFile)
+    else:
+        return False
 
 class SelectHalfMesh_OT_Operator (bpy.types.Operator):
     '''Select half mesh vertices'''
@@ -81,6 +99,73 @@ class ReMirror_OT_Operator (bpy.types.Operator):
         else :
             self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
+
+class FindMissingFiles_OT_Operator (bpy.types.Operator):
+    '''Find Missing Files In Selected Objects\nIf Nothing is selected, whole scene checked'''
+    bl_idname = "ffgen.find_missing_files"
+    bl_label = "ffgen_FindMissingFiles"
+    bl_options =  {"REGISTER","UNDO"}
+
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            return (1)
+        else:
+            return(0)
+    def execute(self, context):
+        objs = context.selected_objects
+        if len(objs) == 0:
+            objs = bpy.data.objects
+        # NOW ITERATING OBJECTS
+        for o in objs:
+            # Iterate over all of the current object's material slots
+            print ("INSPECTING OBJECT: ",o.name)
+            for m in o.material_slots:
+                print ("INSPECTING MATERIAL: ",m.name)
+                if m.material and m.material.use_nodes:
+                    # Iterate over all the current material's texture slots
+                    #for t in m.material.texture_slots:
+                    for n in m.material.node_tree.nodes:
+                        # If this is an image texture, with an active image append its name to the list
+                        #if t and t.texture.type == 'IMAGE' and t.texture.image:
+                        #    imageTextures.append( t.texture.image.name )
+                        if n.type == 'TEX_IMAGE':
+                            r = isTexIssue(n)
+                            if r:
+                                print ("ISSUE:",bpy.path.abspath(n.image.filepath))
+                        elif n.type == 'GROUP':
+                            for each in n.node_tree.nodes:
+                                if each.type == 'TEX_IMAGE':
+                                    r = isTexIssue(each)
+                                    if r:
+                                        print ("ISSUE:",bpy.path.abspath(each.image.filepath))
+            self.report({'INFO'}, "Please check console")
+        return{"FINISHED"}
+
+class FixDuplicateMaterials_OT_Operator (bpy.types.Operator):
+    '''if object 1 using "wood" and object 2 using "wood.001"\nScript will replace all "wood.001" slots with "wood"\nworks on scene materials'''
+    bl_idname = "ffgen.fix_duplicate_materials"
+    bl_label = "ffgen_FixDuplicateMaterials"
+    bl_options =  {"REGISTER","UNDO"}
+
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            return (1)
+        else:
+            return(0)
+    def execute(self, context):
+        mat_list = bpy.data.materials
+        for o in bpy.data.objects:
+            for s in o.material_slots:
+                if s.material.name[-3:].isnumeric():
+                    # the last 3 characters are numbers
+                    if s.material.name[:-4] in mat_list:
+                        # there is a material without the numeric extension so use it
+                        s.material = mat_list[s.material.name[:-4]]
+        else :
+            self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}
 class FfPollGen():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -96,7 +181,7 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
     bl_region_type = "UI"
 
     # testValue = 5
-    
+
     def draw(self, context):
         skSrcObj = context.selected_objects[0]
         skb = 0
@@ -114,6 +199,14 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row = col.row(align = True)
         row.operator("ffgen.select_half", text="Select Half")
         row.operator("ffgen.re_mirror", text="Re-Mirror ")
+        # TEXTURE / SHADING
+        col1 = box_rg.column(align = True)
+        col1.label(text='TEXTURE / SHADING')
+        row = col1.row(align = True)
+        row.operator("ffgen.find_missing_files", text="Find Missing Files")
+        row = col1.row(align = True)
+        row.operator("ffgen.fix_duplicate_materials", text="Fix Duplicate Mats")
+        # SHAPEKEYS
         col2 = box_rg.column(align = True)
         col2.label(text='Shapekey Helpers')
         row = col2.row(align = True)

@@ -2,12 +2,13 @@
 * [General info](#general-info)
 * [Installation](#installation)
 * [Modeling](#modeling)
+* [Texturing / Shading](#modeling)
 * [Shapekeys](#shapekeys)
 * [Rigging](#rigging)
 * [Animation](#animation)
 
 <p align="right">
-    <img style="float: right;" src="./screenshots/wip_2019_12_11.jpg">
+    <img style="float: right;" src="./screenshots/wip_2020_01_31.jpg">
 </p>
 ## General info
 This project is collection of small blender operators, i created for myself while working, compiled as one single addon.
@@ -19,7 +20,10 @@ Just download src and proceed like any other addon installation.
 ## Modeling
 - select half mesh (using object pivot local x axis)
 - re-mirror half, actually delete half and apply mirror
-
+## Texturing / Shading
+- Finding Missing Files on Disk.
+    - Blender has a function to print file names, but often its hard to find, which object is using that file. This function will help finding / sorting this issue with little help
+- Fix Duplicate Materials. Typically on Appending / Merging assets, duplicate materials are created with '.001' etc. this will check those and replace datablocks with orignal material if exists etc
 ## Shapekeys
 - zero all
 - animate frame by frame for testing
@@ -38,9 +42,8 @@ Just download src and proceed like any other addon installation.
 
 ## Animation
 - key selection after n per object
-    - very helpful for selecting keyframes 
+    - very helpful for selecting keyframes
 
 
 # TODOS
 - blendshapes bind to pbones needs little cleanup in UI
-
