@@ -1,0 +1,1095 @@
+{
+  "drivers": [
+    [
+      "MCH-jaw_master",
+      "influence",
+      0,
+      "1.0",
+      "SUM",
+      {
+        "name": "mouth_lock",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"mouth_lock\"]"
+      }
+    ],
+    [
+      "MCH-jaw_master.001",
+      "influence",
+      0,
+      "1.0",
+      "SUM",
+      {
+        "name": "mouth_lock",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"mouth_lock\"]"
+      }
+    ],
+    [
+      "MCH-jaw_master.002",
+      "influence",
+      0,
+      "1.0",
+      "SUM",
+      {
+        "name": "mouth_lock",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"mouth_lock\"]"
+      }
+    ],
+    [
+      "MCH-jaw_master.003",
+      "influence",
+      0,
+      "1.0",
+      "SUM",
+      {
+        "name": "mouth_lock",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"mouth_lock\"]"
+      }
+    ],
+    [
+      "MCH-eyes_parent",
+      "influence",
+      0,
+      "1.0",
+      "SUM",
+      {
+        "name": "eyes_follow",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"eyes_follow\"]"
+      }
+    ],
+    [
+      "brow.T.L.002",
+      "location",
+      1,
+      "(-up*mult) - (dn*mult)",
+      "SCRIPTED",
+      {
+        "name": "up",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browDown_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"brows_mult\"]"
+      }
+    ],
+    [
+      "brow.T.R.002",
+      "location",
+      1,
+      "(-up*mult) - (dn*mult)",
+      "SCRIPTED",
+      {
+        "name": "up",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browDown_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"brows_mult\"]"
+      }
+    ],
+    [
+      "brow.T.L.001",
+      "location",
+      1,
+      "(up*mult) - (dn*mult)",
+      "SCRIPTED",
+      {
+        "name": "up",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browOuterUp_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"brows_mult\"]"
+      },
+      {
+        "name": "dn",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browDown_L\"].value"
+      }
+    ],
+    [
+      "brow.T.R.001",
+      "location",
+      1,
+      "(up*mult) - (dn*mult)",
+      "SCRIPTED",
+      {
+        "name": "up",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browOuterUp_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"brows_mult\"]"
+      },
+      {
+        "name": "dn",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browDown_R\"].value"
+      }
+    ],
+    [
+      "lid.T.L.002",
+      "location",
+      1,
+      "(-blink*mult) + (wide*wideMult)",
+      "SCRIPTED",
+      {
+        "name": "blink",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeBlink_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"blink_mult\"]"
+      },
+      {
+        "name": "wide",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeWide_L\"].value"
+      },
+      {
+        "name": "wideMult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"squint_wide\"]"
+      }
+    ],
+    [
+      "lid.T.R.002",
+      "location",
+      1,
+      "(-blink*mult) + (wide*wideMult)",
+      "SCRIPTED",
+      {
+        "name": "blink",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeBlink_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"blink_mult\"]"
+      },
+      {
+        "name": "wide",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeWide_R\"].value"
+      },
+      {
+        "name": "wideMult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"squint_wide\"]"
+      }
+    ],
+    [
+      "jaw_master",
+      "rotation_euler",
+      0,
+      "value*rot",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"jawOpen\"].value"
+      },
+      {
+        "name": "rot",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"jaw_rot\"]"
+      }
+    ],
+    [
+      "jaw_master",
+      "location",
+      1,
+      "value*move",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"jawForward\"].value"
+      },
+      {
+        "name": "move",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"jaw_move\"]"
+      }
+    ],
+    [
+      "lips.L",
+      "location",
+      0,
+      "(smile*corner) - (funnel*funnelMult) -  (puck*funnelMult)",
+      "SCRIPTED",
+      {
+        "name": "smile",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthSmile_L\"].value"
+      },
+      {
+        "name": "corner",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_corners\"]"
+      },
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelMult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnel\"]"
+      },
+      {
+        "name": "puck",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthPucker\"].value"
+      }
+    ],
+    [
+      "lips.R",
+      "location",
+      0,
+      "(-smile*corner) + (funnel*funnelMult) + (puck*funnelMult)",
+      "SCRIPTED",
+      {
+        "name": "smile",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthSmile_R\"].value"
+      },
+      {
+        "name": "corner",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_corners\"]"
+      },
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelMult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnel\"]"
+      },
+      {
+        "name": "puck",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthPucker\"].value"
+      }
+    ],
+    [
+      "lips.L",
+      "location",
+      1,
+      "(smile*move)-(frown*move)",
+      "SCRIPTED",
+      {
+        "name": "smile",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthSmile_L\"].value"
+      },
+      {
+        "name": "move",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_corners\"]"
+      },
+      {
+        "name": "frown",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFrown_L\"].value"
+      }
+    ],
+    [
+      "lips.R",
+      "location",
+      1,
+      "(smile*move)-(frown*move)",
+      "SCRIPTED",
+      {
+        "name": "smile",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthSmile_R\"].value"
+      },
+      {
+        "name": "move",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_corners\"]"
+      },
+      {
+        "name": "frown",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFrown_R\"].value"
+      }
+    ],
+    [
+      "eyes",
+      "location",
+      1,
+      "(-var*move)+offY",
+      "SCRIPTED",
+      {
+        "name": "var",
+        "type": "TRANSFORMS",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"grp_eyeRight\")>",
+        "transform_space": "WORLD_SPACE",
+        "transform_type": "ROT_X",
+        "rotation_mode": "XYZ",
+        "data_path": "rotation_euler[0]"
+      },
+      {
+        "name": "move",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"eyes_moveY\"]"
+      },
+      {
+        "name": "offY",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"eyes_offY\"]"
+      }
+    ],
+    [
+      "eyes",
+      "location",
+      0,
+      "(var*move)+offX",
+      "SCRIPTED",
+      {
+        "name": "var",
+        "type": "TRANSFORMS",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"grp_eyeRight\")>",
+        "transform_space": "WORLD_SPACE",
+        "transform_type": "ROT_Z",
+        "rotation_mode": "XYZ",
+        "data_path": "rotation_euler[0]"
+      },
+      {
+        "name": "move",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"eyes_moveX\"]"
+      },
+      {
+        "name": "offX",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"eyes_offX\"]"
+      }
+    ],
+    [
+      "brow.T.L.003",
+      "location",
+      1,
+      "(up*mult) - (dn*mult)",
+      "SCRIPTED",
+      {
+        "name": "up",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browInnerUp\"].value"
+      },
+      {
+        "name": "dn",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browDown_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"brows_mult\"]"
+      }
+    ],
+    [
+      "brow.T.R.003",
+      "location",
+      1,
+      "(up*mult) - (dn*mult)",
+      "SCRIPTED",
+      {
+        "name": "up",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browInnerUp\"].value"
+      },
+      {
+        "name": "dn",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"browDown_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"brows_mult\"]"
+      }
+    ],
+    [
+      "lip.B.L.001",
+      "location",
+      1,
+      "-value*mult",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthLowerDown_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_mid\"]"
+      }
+    ],
+    [
+      "lip.B.R.001",
+      "location",
+      1,
+      "-value*mult",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthLowerDown_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_mid\"]"
+      }
+    ],
+    [
+      "lip.T.L.001",
+      "location",
+      1,
+      "value*mult",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthUpperUp_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_mid\"]"
+      }
+    ],
+    [
+      "lip.T.R.001",
+      "location",
+      1,
+      "value*mult",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthUpperUp_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_mid\"]"
+      }
+    ],
+    [
+      "lip.T",
+      "location",
+      1,
+      "(value*mult) + (funnel*funnelMult) - (rollUp*.1*rollFactor)",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthShrugUpper\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_center\"]"
+      },
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelMult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnel\"]"
+      },
+      {
+        "name": "rollUp",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthRollUpper\"].value"
+      },
+      {
+        "name": "rollFactor",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_roll\"]"
+      }
+    ],
+    [
+      "lip.B",
+      "location",
+      1,
+      "(value*mult) - (funnel*funnelMult) +(roll*rollFactor*.08)",
+      "SCRIPTED",
+      {
+        "name": "value",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthShrugLower\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_center\"]"
+      },
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelMult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnel\"]"
+      },
+      {
+        "name": "roll",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthRollLower\"].value"
+      },
+      {
+        "name": "rollFactor",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_roll\"]"
+      }
+    ],
+    [
+      "jaw_master",
+      "location",
+      0,
+      "(left*mult)-(right*mult)",
+      "SCRIPTED",
+      {
+        "name": "left",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"jawLeft\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"jaw_move\"]"
+      },
+      {
+        "name": "right",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"jawRight\"].value"
+      }
+    ],
+    [
+      "lid.B.L.002",
+      "location",
+      1,
+      "(squint*mult) - (wide*mult)",
+      "SCRIPTED",
+      {
+        "name": "squint",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeSquint_L\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"squint_wide\"]"
+      },
+      {
+        "name": "wide",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeWide_L\"].value"
+      }
+    ],
+    [
+      "lid.B.R.002",
+      "location",
+      1,
+      "(squint*mult) - (wide*mult)",
+      "SCRIPTED",
+      {
+        "name": "squint",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeSquint_R\"].value"
+      },
+      {
+        "name": "mult",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"eyes\"][\"squint_wide\"]"
+      },
+      {
+        "name": "wide",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"eyeWide_R\"].value"
+      }
+    ],
+    [
+      "lip.B",
+      "location",
+      2,
+      "(funnel*funnelDepth) + (puck*funnelDepth) - (roll*rollFactor*.1)",
+      "SCRIPTED",
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelDepth",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnelDepth\"]"
+      },
+      {
+        "name": "puck",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthPucker\"].value"
+      },
+      {
+        "name": "roll",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthRollLower\"].value"
+      },
+      {
+        "name": "rollFactor",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_roll\"]"
+      }
+    ],
+    [
+      "lip.T",
+      "location",
+      2,
+      "(funnel*funnelDepth) + (puck*funnelDepth) - (rollUp*.1*rollFactor)",
+      "SCRIPTED",
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelDepth",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnelDepth\"]"
+      },
+      {
+        "name": "puck",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthPucker\"].value"
+      },
+      {
+        "name": "rollUp",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthRollUpper\"].value"
+      },
+      {
+        "name": "rollFactor",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_roll\"]"
+      }
+    ],
+    [
+      "lips.L",
+      "location",
+      2,
+      "funnel*funnelDepth",
+      "SCRIPTED",
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelDepth",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnelDepth\"]"
+      }
+    ],
+    [
+      "lips.R",
+      "location",
+      2,
+      "funnel*funnelDepth",
+      "SCRIPTED",
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelDepth",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnelDepth\"]"
+      }
+    ],
+    [
+      "lip.T",
+      "rotation_euler",
+      0,
+      "(-funnel*funnelDepth*200) - (puck*funnelDepth*100) + (rollup*rollFactor)",
+      "SCRIPTED",
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelDepth",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnelDepth\"]"
+      },
+      {
+        "name": "puck",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthPucker\"].value"
+      },
+      {
+        "name": "rollup",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthRollUpper\"].value"
+      },
+      {
+        "name": "rollFactor",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_roll\"]"
+      }
+    ],
+    [
+      "lip.B",
+      "rotation_euler",
+      0,
+      "(funnel*funnelDepth*200) + (puck*funnelDepth*100) - (roll*rollFactor*3)",
+      "SCRIPTED",
+      {
+        "name": "funnel",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthFunnel\"].value"
+      },
+      {
+        "name": "funnelDepth",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"funnelDepth\"]"
+      },
+      {
+        "name": "puck",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthPucker\"].value"
+      },
+      {
+        "name": "roll",
+        "type": "SINGLE_PROP",
+        "id_type": "KEY",
+        "id": "<bpy_struct, Key(\"Key\")>",
+        "data_path": "key_blocks[\"mouthRollLower\"].value"
+      },
+      {
+        "name": "rollFactor",
+        "type": "SINGLE_PROP",
+        "id_type": "OBJECT",
+        "id": "<bpy_struct, Object(\"rig\")>",
+        "data_path": "pose.bones[\"jaw_master\"][\"lip_roll\"]"
+      }
+    ]
+  ],
+  "properties": [
+    [
+      "eyes",
+      "squint_wide",
+      0.005
+    ],
+    [
+      "eyes",
+      "eyes_offY",
+      0.197
+    ],
+    [
+      "jaw_master",
+      "lip_roll",
+      0.1
+    ],
+    [
+      "eyes",
+      "blink_mult",
+      0.013
+    ],
+    [
+      "jaw_master",
+      "funnelDepth",
+      0.003
+    ],
+    [
+      "jaw_master",
+      "funnel",
+      0.006
+    ],
+    [
+      "jaw_master",
+      "lip_mid",
+      0.007
+    ],
+    [
+      "jaw_master",
+      "lip_corners",
+      0.01
+    ],
+    [
+      "eyes",
+      "eyes_moveX",
+      0.183
+    ],
+    [
+      "eyes",
+      "eyes_follow",
+      1.0
+    ],
+    [
+      "jaw_master",
+      "lip_center",
+      0.01
+    ],
+    [
+      "jaw_master",
+      "jaw_rot",
+      0.676
+    ],
+    [
+      "jaw_master",
+      "jaw_move",
+      0.02
+    ],
+    [
+      "eyes",
+      "eyes_moveY",
+      0.132
+    ],
+    [
+      "eyes",
+      "brows_mult",
+      0.015
+    ]
+  ]
+}

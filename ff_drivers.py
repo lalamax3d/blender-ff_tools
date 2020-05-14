@@ -1,4 +1,5 @@
 import bpy
+from bpy import context as context
 
 def getDriversInfo():
     o = bpy.context.active_object
@@ -96,7 +97,7 @@ def setupDriver(dd):
         # depending on above type, process is different
         if var.type == 'SINGLE_PROP':
             var.targets[0].id_type = vd["id_type"] # KEY , TODO: can be object
-            if var.targets[0].id_type == 'KEY' :    
+            if var.targets[0].id_type == 'KEY' :
                 idv = vd['id'].split('"')[1]
                 allKeys = bpy.data.shape_keys
                 sk = allKeys[idv]
@@ -120,7 +121,7 @@ def setupDriver(dd):
             if 'ROT' in var.targets[0].transform_type:
                 var.targets[0].rotation_mode = vd['rotation_mode']
             #var.targets[0].data_path = vd['data_path']
-        
+
     d.driver.type = dd[4] # set to scripted etc
     d.driver.expression = dd[3] # set expression
     print ("DONE")
@@ -136,10 +137,14 @@ def importDriversFromJson():
     props = d['properties']
     # print (len(drivers))
     # print (len(props))
+    # TODO , stop influence ones
+    # STEP 1: Setup Properties
     createBasicPropertiesFromJson(drivers)
+    # STEP 2: Setup Expressions
     for each in drivers:
+        print ("SETTING DRIVER on Bone:%s \t %s \t %s"%(each[0],each[1],each[2]))
         setupDriver(each)
-    # loading values
+    # STEP 3: Loading values
     loadPropertyValuesFromJson(props)
 
 # exportDriversToJson()
@@ -192,7 +197,7 @@ def getBoneDrivers(pbone):
         if pbone.name in dp:
             dlist.append(each)
     return dlist
-        
+
 # PROCESS
 # save json ( best config )
 

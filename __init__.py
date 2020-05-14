@@ -26,21 +26,24 @@ import bpy
 from bpy import context as context
 from . ff_model import FfModelingPropGrp
 from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator, FF_PT_Model
-from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
+from . ff_facecap import FfFaceCapPropGrp
+from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, SetQuatRotations_OT_Operator , exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
 
 from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_OT_Operator
-
+from . ff_facecap import ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator, SetupFcSingleDriver_OT_Operator
 # VARIABLES - globals for GUI button presses
 bpy.types.Scene.ff_general = bpy.props.BoolProperty(default=False)
 bpy.types.Scene.ff_rigging = bpy.props.BoolProperty(default=False)
 bpy.types.Scene.ff_anim = bpy.props.BoolProperty(default=False)
+bpy.types.Scene.ff_facecap = bpy.props.BoolProperty(default=False)
 
 # bpy.types.Scene.ff_skFilter = bpy.props.StringProperty(default='search shape')
 bpy.types.Scene.ff_anim_kr = bpy.props.IntProperty(default=4,min=2,max=9,step=1)
 
 # below line is special
 bpy.types.Scene.ff_model_prop_grp = bpy.props.PointerProperty(type=FfModelingPropGrp)
+bpy.types.Scene.ff_rig_prop_grp = bpy.props.PointerProperty(type=FfFaceCapPropGrp)
 
 
 
@@ -66,10 +69,11 @@ class FF_PT_Panel(bpy.types.Panel):
 classes = (
         SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator,
         SkZeroAll_OT_Operator, SkAnimateAll_OT_Operator, SkBindToBone_OT_Operator,
-        UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator,
+        UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator,SetQuatRotations_OT_Operator,
         exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator,
         CopyIkArms_OT_Operator, CopyIklegs_OT_Operator,
         KeySelectionOp_OT_Operator,KeyDeletionOp_OT_Operator,
+        ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator,SetupFcSingleDriver_OT_Operator,
         FF_PT_Panel, FF_PT_Model, FF_PT_Rig, FF_PT_Anim)
 
 register,unregister = bpy.utils.register_classes_factory(classes)

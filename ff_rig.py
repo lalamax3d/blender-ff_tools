@@ -3,6 +3,10 @@ from bpy import context as context
 
 from . ff_drivers import importDriversFromJson, exportDriversToJson
 
+from . ff_facecap import state
+from . ff_facecap import FfFaceCapPropGrp
+from . ff_facecap import ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator, SetupFcSingleDriver_OT_Operator
+
 def countRigifyBones():
     # assume rig object is selected
     rig = context.active_object
@@ -15,7 +19,7 @@ def getOppositeCntShapeByName(cntName):
         cntName.replace(".L",".R")
     else:
         pass
-    return cntName
+    return cntNamea
 
 def updateCntShapesOnOneSide(side=".R"):
     #opp = ""
@@ -96,6 +100,27 @@ class SetEulerRotations_OT_Operator (bpy.types.Operator):
             pbone.rotation_mode = 'ZXY'
         self.report({'INFO'}, "Done.")
         return{"FINISHED"}
+class SetQuatRotations_OT_Operator (bpy.types.Operator):
+    '''Selected Pose Bones to Quat'''
+    bl_idname = "ffrig.set_quat_rotations"
+    bl_label = "ffrig_QuatRotationsOnSelectedPoseBones"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((pollCheckArmatureObject(context.object)) and (context.object.mode =="POSE") and (len(context.selected_pose_bones) > 0)):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        obj = bpy.context.object
+        pBones = bpy.context.selected_pose_bones
+        print (pBones)
+        for pbone in pBones:
+            pbone.rotation_mode = 'QUATERNION'
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
 class exportDriversToJson_OT_Operator(bpy.types.Operator):
     bl_idname = "ffrig.export_drivers_json"
     bl_label = "FF Export Drivers To Json"
@@ -133,6 +158,7 @@ def pollCheckArmatureObject(obj):
     except:
         return(0)
 
+
 class FF_PT_Rig(FfPollRig, bpy.types.Panel):
     bl_idname = "FF_PT_Rig"
     bl_label = "Rigging"
@@ -154,9 +180,44 @@ class FF_PT_Rig(FfPollRig, bpy.types.Panel):
         row.operator("ffrig.select_one_sided_objects", text="Select One Sided CNT Objs")
         row = col.row(align = True)
         row.operator("ffrig.set_euler_rotations", text="Set Euler Rotations")
+        row = col.row(align = True)
+        row.operator("ffrig.set_quat_rotations", text="Set Quat Rotations")
         # drivers
         col2 = box.column(align = True)
         col2.label(text='Drivers')
         row2 = col2.row(align = True)
         row2.operator("ffrig.import_drivers_json", text="Import")
         row2.operator("ffrig.export_drivers_json",text="Export")
+        # FACE CAP
+        s = state()
+        col3 = box.column(align = True)
+        col3.label(text='FaceCap')
+
+        row3 = col3.row(align = True)
+        row3.prop(s,"fc_activeJson",text="Mapping")
+
+        #row4 = col3.row(align = True)
+        row3.operator("ffrig.read_facecap_json", text="Read Json")
+
+        row = col3.row(align=True)
+        row.prop(s,'fc_boneProps',text='Props')
+        #row4 = col3.row(align = True)
+        row.operator("ffrig.setup_fc_bone_props", text="Setup Bone Props")
+
+        row = col3.row(align=True)
+        #row.prop(s,'fc_drivers',text='Drivers')
+        row.label(text='Total')
+        # row = col3.row(align=True)
+        row.prop(s,'fc_aDriver',text='actDriver')
+        row.operator("ffrig.setup_fc_single_driver",text="Setup Driver")
+
+        split = layout.row().split(factor=0.244)
+        split.column().label(text='Target:')
+        split.column().label(text=context.object.name, icon='ARMATURE_DATA')
+
+        #layout.prop(s, 'selected_source', text='Source', icon='MESH_DATA')
+        col = box.column(align = True)
+        row = col.row(align = True)
+        row.prop(s, 'selected_head', text='headSrc', icon='MESH_DATA')
+        row = col.row(align = True)
+        row.prop(s, 'selected_eye', text='eyeSrc', icon='OBJECT_DATA')
