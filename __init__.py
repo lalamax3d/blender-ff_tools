@@ -31,7 +31,7 @@ from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
 
 from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_OT_Operator
-from . ff_facecap import ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator, SetupFcSingleDriver_OT_Operator
+from . ff_facecap import ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator, SetupFcSingleDriver_OT_Operator, SetupFcDrivers_OT_Operator
 # VARIABLES - globals for GUI button presses
 bpy.types.Scene.ff_general = bpy.props.BoolProperty(default=False)
 bpy.types.Scene.ff_rigging = bpy.props.BoolProperty(default=False)
@@ -73,7 +73,7 @@ classes = (
         exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator,
         CopyIkArms_OT_Operator, CopyIklegs_OT_Operator,
         KeySelectionOp_OT_Operator,KeyDeletionOp_OT_Operator,
-        ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator,SetupFcSingleDriver_OT_Operator,
+        ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator,SetupFcSingleDriver_OT_Operator,SetupFcDrivers_OT_Operator,
         FF_PT_Panel, FF_PT_Model, FF_PT_Rig, FF_PT_Anim)
 
 register,unregister = bpy.utils.register_classes_factory(classes)

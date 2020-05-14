@@ -11,7 +11,7 @@ def ReadFromJson():
     import os
     #obj = bpy.context.object
     infile = state().fc_activeJson
-    print ("Json FOund:", os.path.isfile(state().fc_activeJson))
+    print ("Json Found:", os.path.isfile(state().fc_activeJson), infile)
     with open(infile) as json_data:
         d = json.load(json_data)
     drivers = d['drivers']
@@ -49,6 +49,73 @@ def createBasicPropertiesFromJson(jsondata):
         b = d[1]
         p = d[-2]
         createBoneProp(b,p)
+def loadPropertyValuesFromJson(props):
+    o = bpy.context.active_object #assuming rig
+    for each in props:
+        b = each[0]
+        p = each[1]
+        v = each[2]
+        bone = o.pose.bones.get(b)
+        if bone.get(p):
+            bone[p] = v #loading value in prop
+            print ("Setting Bone %s param %s to value %f" %(b,p,v))
+        else:
+            print ("Skipping Bone %s param %s to value " %(b,p))
+def setupDriver(dd):
+    #TODO , make sure, ROtation is Euler XYZ
+    o = bpy.context.active_object
+    # get bone by name
+    bone = o.pose.bones.get(dd[0])
+    # add driver to prop on axis and wait for (scripted expression)
+    d = bone.driver_add(dd[1],dd[2])
+    # set variables
+    print ("Starting ITEM")
+    for i in range(5,len(dd)):
+        vd = dd[i]
+        print (i, '\t', vd)
+        var = d.driver.variables.new()
+        var.name = vd['name']
+        var.type = vd['type'] # SINGLE_PROP OR TRANFORMS
+        # depending on above type, process is different
+        if var.type == 'SINGLE_PROP':
+            var.targets[0].id_type = vd["id_type"] # KEY , TODO: can be object
+            if var.targets[0].id_type == 'KEY' :
+
+                # this is shapekey id from json
+                idv = vd['id'].split('"')[1]
+                # APPROACH: get that shape key id from scene
+
+                #allKeys = bpy.data.shape_keys
+                #sk = allKeys[idv]
+                #var.targets[0].id = sk
+
+                # above is issue. not necessary shape key exists so, get user head shape key
+                # GET NEW SHAPE KEY FROM FFRIGPROPGROUP USER HEAD SHAPE KEY
+                userHead = bpy.context.scene.ff_rig_prop_grp.selected_head
+                sk = userHead.data.shape_keys.id_data
+                var.targets[0].id = sk
+                var.targets[0].data_path = vd['data_path']
+            elif var.targets[0].id_type == 'OBJECT' :
+                idv = vd['id'].split('"')[1]
+                objects = bpy.data.objects
+                obj = objects[idv]
+                var.targets[0].id = obj
+                var.targets[0].data_path = vd['data_path']
+        elif var.type == 'TRANSFORMS':
+            # in this case id_type is always OBJECT
+            # var.targets[0].id_type = vd["id_type"]
+            idv = vd['id'].split('"')[1]
+            objects = bpy.data.objects
+            obj = objects[idv]
+            var.targets[0].id = obj
+            var.targets[0].transform_space = vd['transform_space']
+            var.targets[0].transform_type = vd['transform_type']
+            if 'ROT' in var.targets[0].transform_type:
+                var.targets[0].rotation_mode = vd['rotation_mode']
+            #var.targets[0].data_path = vd['data_path']
+    d.driver.type = dd[4] # set to scripted etc
+    d.driver.expression = dd[3] # set expression
+    print ("DONE")
 class ReadFaceCapJson_OT_Operator (bpy.types.Operator):
     '''Read Drivers Json File'''
     bl_idname = "ffrig.read_facecap_json"
@@ -57,9 +124,8 @@ class ReadFaceCapJson_OT_Operator (bpy.types.Operator):
 
     @classmethod
     def poll(cls, context):
-        if context.area.type == 'VIEW_3D':
-            if context.object:
-                return (1)
+        if context.area.type == 'VIEW_3D' and context.object:
+            return (1)
         else:
             return(0)
 
@@ -81,12 +147,17 @@ class SetupFcBoneProps_OT_Operator (bpy.types.Operator):
             return(0)
 
     def execute(self, context):
+        import os,json
         infile = state().fc_activeJson
-        print ("Json FOund:", os.path.isfile(state().fc_activeJson))
+        print ("Json Used:", os.path.isfile(state().fc_activeJson))
         with open(infile) as json_data:
             d = json.load(json_data)
         drivers = d['drivers']
+        props = d['properties']
+        print ("Creating Required Properties")
         createBasicPropertiesFromJson(drivers)
+        print ("Tuning Required Properties Values")
+        loadPropertyValuesFromJson(props)
         return{"FINISHED"}
 ## TUNE VALUES OPERATOR HERE
 
@@ -105,9 +176,50 @@ class SetupFcSingleDriver_OT_Operator (bpy.types.Operator):
             return(0)
 
     def execute(self, context):
-
+        import os,json
+        infile = state().fc_activeJson
+        print ("Json Found:",state().fc_activeJson)
+        with open(infile) as json_data:
+            d = json.load(json_data)
+        drivers = d['drivers']
+        driver = drivers[state().fc_aDriver]
+        dd1 = driver[1]
+        print (driver[0],'\t', driver[1])
+        if dd1 != 'influence':
+            #print (drivers[state().fc_aDriver])
+            setupDriver(driver)
+        else:
+            print ("SKIPPING DRIVER AS ITS CONSTRAINT")
         return{"FINISHED"}
+class SetupFcDrivers_OT_Operator (bpy.types.Operator):
+    '''Setup Single indexed driver'''
+    bl_idname = "ffrig.setup_fc_drivers"
+    bl_label = "ffrig_SetupFcDrivers"
+    bl_options = {"REGISTER", "UNDO"}
 
+    @classmethod
+    def poll(cls, context):
+        if context.area.type == 'VIEW_3D' and context.object:
+            return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        import os,json
+        infile = state().fc_activeJson
+        print ("Json Found:",state().fc_activeJson)
+        with open(infile) as json_data:
+            d = json.load(json_data)
+        drivers = d['drivers']
+        for driver in drivers:
+            dd1 = driver[1]
+            print (driver[0],'\t', driver[1])
+            if dd1 != 'influence':
+                #print (drivers[state().fc_aDriver])
+                setupDriver(driver)
+            else:
+                print ("SKIPPING DRIVER AS ITS CONSTRAINT")
+        return{"FINISHED"}
 def UpdatedFunction(self, context):
     print("Updating Function")
     print(self.fc_activeJson)
@@ -132,7 +244,7 @@ class FfFaceCapPropGrp(bpy.types.PropertyGroup):
     )
     selected_eye: bpy.props.PointerProperty(
         type=bpy.types.Object,
-        poll=lambda self, obj: obj.type == 'MESH' and obj != bpy.context.object,
+        poll=lambda self, obj: obj.type == 'EMPTY' and obj != bpy.context.object,
         update=lambda self, ctx: state().update_source()
     )
     invalid_selected_source: bpy.props.PointerProperty(

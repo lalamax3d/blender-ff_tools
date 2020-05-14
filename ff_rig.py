@@ -5,7 +5,7 @@ from . ff_drivers import importDriversFromJson, exportDriversToJson
 
 from . ff_facecap import state
 from . ff_facecap import FfFaceCapPropGrp
-from . ff_facecap import ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator, SetupFcSingleDriver_OT_Operator
+from . ff_facecap import ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator, SetupFcSingleDriver_OT_Operator, SetupFcDrivers_OT_Operator
 
 def countRigifyBones():
     # assume rig object is selected
@@ -205,11 +205,14 @@ class FF_PT_Rig(FfPollRig, bpy.types.Panel):
         row.operator("ffrig.setup_fc_bone_props", text="Setup Bone Props")
 
         row = col3.row(align=True)
-        #row.prop(s,'fc_drivers',text='Drivers')
-        row.label(text='Total')
+        # row.label(text='Total')
+        row.prop(s,'fc_drivers',text='Drivers')
         # row = col3.row(align=True)
         row.prop(s,'fc_aDriver',text='actDriver')
-        row.operator("ffrig.setup_fc_single_driver",text="Setup Driver")
+        row.operator("ffrig.setup_fc_single_driver",text="Test Driver")
+
+        row = col3.row(align=True)
+        row.operator("ffrig.setup_fc_drivers",text="Setup Drivers")
 
         split = layout.row().split(factor=0.244)
         split.column().label(text='Target:')

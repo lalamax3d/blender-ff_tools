@@ -1007,6 +1007,11 @@
     ],
     [
       "eyes",
+      "eyes_offX",
+      0.0
+    ],
+    [
+      "eyes",
       "eyes_follow",
       1.0
     ],
