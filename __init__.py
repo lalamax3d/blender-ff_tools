@@ -29,6 +29,8 @@ from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMis
 from . ff_facecap import FfFaceCapPropGrp
 from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, SetQuatRotations_OT_Operator , exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
+from . ff_anim import EnableFcurveModifers_OT_Operator, EnableFcurveModifersAll_OT_Operator, DisableFcurveModifers_OT_Operator, DisableFcurveModifersAll_OT_Operator
+from . ff_anim import MirrorFcurveModifers_OT_Operator
 from . ff_rend import setupPrismOutput_OT_Operator, FF_PT_Rend
 
 
@@ -77,6 +79,9 @@ classes = (
         exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator,
         CopyIkArms_OT_Operator, CopyIklegs_OT_Operator,
         KeySelectionOp_OT_Operator,KeyDeletionOp_OT_Operator,
+        EnableFcurveModifers_OT_Operator,EnableFcurveModifersAll_OT_Operator,
+        DisableFcurveModifers_OT_Operator, DisableFcurveModifersAll_OT_Operator,
+        MirrorFcurveModifers_OT_Operator, 
         ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator,SetupFcSingleDriver_OT_Operator,SetupFcDrivers_OT_Operator,
         setupPrismOutput_OT_Operator, 
         FF_PT_Panel, FF_PT_Model, FF_PT_Rig, FF_PT_Anim, FF_PT_Rend)

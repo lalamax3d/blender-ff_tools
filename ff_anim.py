@@ -101,6 +101,29 @@ def keyDeletion(step):
             bpy.ops.anim.keyframe_delete(type='Rotation')
             bpy.ops.anim.keyframe_delete(type='Location')
 
+
+
+def getOppositeBone():
+    bn = bpy.context.active_pose_bone
+    if bn.name.find('.L') != -1:
+        obn = bn.name.replace('.L','.R')
+        ob = bpy.context.active_object.pose.bones.get(obn)
+    elif bn.name.find('.R') != -1:
+        obn = bn.name.replace('.R','.L')
+        ob = bpy.context.active_object.pose.bones.get(obn)
+    if ob:
+        return ob
+    else:
+        return None
+    
+def setOppositeRotation():
+    bn = bpy.context.active_pose_bone
+    obn = getOppositeBone()
+    if obn != None:
+        obn.rotation_euler.x  = bn.rotation_euler.x #* (3.1415/180)
+        obn.rotation_euler.y  = bn.rotation_euler.y #* (3.1415/180)
+        obn.rotation_euler.z  = - bn.rotation_euler.z #* (3.1415/180)
+
 # OPERATORS HERE
 
 
@@ -209,6 +232,147 @@ class KeyDeletionOp_OT_Operator (bpy.types.Operator):
         self.report({'INFO'}, "Done.")
         return{"FINISHED"}
 
+class EnableFcurveModifers_OT_Operator (bpy.types.Operator):
+    '''Enable Fcurve Modifiers on selected pose bones'''
+    bl_idname = "ffbody.enable_fcurve_modifers"
+    bl_label = "ffbody_enableFcurveModifers"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and (context.object.type =="ARMATURE")):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        for each in context.active_object.animation_data.action.fcurves:
+            if len(each.modifiers) > 0:
+                for mod in each.modifiers:
+                    mod.active  = True
+                    mod.mute = False
+                    print (each.data_path)
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
+class DisableFcurveModifers_OT_Operator (bpy.types.Operator):
+    '''Disable Fcurve Modifiers on selected pose bones'''
+    bl_idname = "ffbody.disable_fcurve_modifers"
+    bl_label = "ffbody_disableFcurveModifers"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and (context.object.type =="ARMATURE")):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        for each in context.active_object.animation_data.action.fcurves:
+            if len(each.modifiers) > 0:
+                for mod in each.modifiers:
+                    mod.active  = False
+                    mod.mute = True
+                    print (each.data_path)
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
+class EnableFcurveModifersAll_OT_Operator (bpy.types.Operator):
+    '''Enable Fcurve Modifiers on Current Action'''
+    bl_idname = "ffbody.enable_fcurve_modifers_all"
+    bl_label = "ffbody_enableFcurveModifersAll"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and (context.object.type =="ARMATURE")):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        for each in context.active_object.animation_data.action.fcurves:
+            if len(each.modifiers) > 0:
+                for mod in each.modifiers:
+                    mod.active  = True
+                    mod.mute = False
+                    print (each.data_path)
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
+class DisableFcurveModifersAll_OT_Operator (bpy.types.Operator):
+    '''Disable Fcurve Modifiers on Current Action'''
+    bl_idname = "ffbody.disable_fcurve_modifers_all"
+    bl_label = "ffbody_disableFcurveModifersAll"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and (context.object.type =="ARMATURE")):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        for each in context.active_object.animation_data.action.fcurves:
+            if len(each.modifiers) > 0:
+                for mod in each.modifiers:
+                    mod.active  = False
+                    mod.mute = True
+                    print (each.data_path)
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
+
+class MirrorFcurveModifers_OT_Operator (bpy.types.Operator):
+    '''Mirror Fcurve Modifiers of active Bone on opposite bone'''
+    bl_idname = "ffbody.mirror_fcurve_modifers"
+    bl_label = "ffbody_MirrorFcurveModifers"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and (context.object.type =="ARMATURE")):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        bn = context.active_pose_bone    
+        obn = getOppositeBone()
+        action = context.active_object.animation_data.action
+        groups = action.groups
+        fcurves = action.fcurves
+        #print (len(groups))
+        #print (len(fcurves))
+        g = groups[bn.name]
+        channels = g.channels # precise 3 fcurves :D
+        og = groups[obn.name]
+        ochannels = og.channels
+        
+        #for fc in channels:
+        for i in range(0,3):
+            fc1 = channels[i]
+            fc2 = ochannels[i]
+            # assumming single modifier of my typical need here (very bad)
+            if len(fc1.modifiers) > 0:
+                print ('Src Data Path:', fc1.data_path,i)
+                print ('Tar Data Path:', fc2.data_path,i)
+                m1 = fc1.modifiers[0]
+                m2 = fc2.modifiers[0]
+                print ('Additive', m1.use_additive)
+                print ('Amplitude', round(m1.amplitude,2), 'Tar:', round(m2.amplitude,2))
+                print ('Phase Multiplier', round(m1.phase_multiplier,2), 'Tar:', round(m2.phase_multiplier,2))
+                print ('Phase Offset', round(m1.phase_offset,2), 'Tar:', round(m2.phase_offset,2))
+                print ('Value Offset', round(m1.value_offset,2), 'Tar:', round(m2.value_offset,2))
+                m2.amplitude = m1.amplitude
+                m2.phase_multiplier = m1.phase_multiplier
+                m2.phase_offset = m1.phase_offset
+                if (i == 2): # flip z values only
+                    m2.value_offset = - m1.value_offset
+                    m2.phase_offset = - m1.phase_offset - 3
+                    print ('value_offset_fixed')
+                
+        print ("DONE")
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
 class FfPollMoCap():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -243,3 +407,21 @@ class FF_PT_Anim(FfPollMoCap, bpy.types.Panel):
         row.operator("ffbody.key_selection", text="Select keyframes")
         row = col.row(align = True)
         row.operator("ffbody.key_deletion", text="Delete Keyframes")
+
+        col = box.column(align = True)
+        col.label(text='FCurveModifiers')
+        row = col.row(align = True)
+        row.operator("ffbody.enable_fcurve_modifers",text="En F Modifiers(sel)")
+        row.operator("ffbody.disable_fcurve_modifers",text="Di F Modifiers(sel)")
+
+        #col = box.column(align = True)
+        #col.label(text='FCurveModifiers')
+        row = col.row(align = True)
+        row.operator("ffbody.enable_fcurve_modifers_all",text="En F Modifiers(All)")
+        row.operator("ffbody.disable_fcurve_modifers_all",text="Di F Modifiers(All)")
+
+        
+        col = box.column(align = True)
+        col.label(text='FCurve Mirror')
+        row = col.row(align = True)
+        row.operator("ffbody.mirror_fcurve_modifers",text="Mirror FCurve Mod Values")
