@@ -234,7 +234,11 @@ def UpdatedFunction(self, context):
 # from . ff_model import MyPropertyGroup
 
 class FfModelingPropGrp(bpy.types.PropertyGroup):
-    sk_filterStr = bpy.props.StringProperty(name ="Empty Filter will bind all shapekeys to selected Bone \nAfter changing filter text, hit enter key to refresh",default='',update=UpdatedFunction)
+    sk_filterStr : bpy.props.StringProperty(
+        name ="Empty Filter will bind all shapekeys to selected Bone \nAfter changing filter text, hit enter key to refresh",
+        default='',
+        description="shape key filter",
+        update=UpdatedFunction)
     lockHead : bpy.props.BoolProperty(
         name="Enable or Disable",
         description="Lock the head position of the bone",

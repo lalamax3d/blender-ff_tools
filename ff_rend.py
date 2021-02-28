@@ -9,9 +9,9 @@ global pcore
 pcore = PrismCore.PrismCore(app="Blender")
 
 
-def isPrismFile(context):
+def renderPngPasses(context):
     ''' 
-        this function will check if valid shot is opened from Current Prism project and return yes or not
+        this function will setup PNG and output passes as well
     '''
     pcore.projectPath
     pcore.scenePath # points to workflow dir
@@ -31,7 +31,7 @@ def isPrismFile(context):
     # create / output dir exists
     print ("RENDERING DIR EXPECTED PATH:", rendDir)
     print ("RENDERING DIR FOUND:", rendDir.exists())
-    renderer = context.scene.render.engine.split('_')[1]
+    renderer = context.scene.render.engine #.split('_')[1]
     rendDir = rendDir.joinpath(renderer)
     rendDir.mkdir(parents=True, exist_ok=True) # will create EEVEE or CYCLES Directory
 
@@ -128,7 +128,7 @@ class setupPrismOutput_OT_Operator (bpy.types.Operator):
             return(0)
     '''
     def execute(self, context):
-        isPrismFile(context)
+        renderPngPasses(context)
         self.report({'INFO'}, "Done.")
         return{"FINISHED"}
 class FfPollRend():
@@ -152,6 +152,11 @@ class FF_PT_Rend(FfPollRend, bpy.types.Panel):
         col = box.column(align = True)
         col.label(text='PRISM ASSIST')
         row = col.row(align=True)
-        # row.prop(s,'fc_boneProps',text='Props')
-        #row4 = col3.row(align = True)
-        row.operator("ffrend.setup_prism_output", text="Setup Prism Render (PNG)")
+        row.operator("ffrend.setup_prism_output", text="Setup Masks AOV")
+        row = col.row(align=True)
+        row.operator("ffrend.setup_prism_output", text="PNG Render")
+        row = col.row(align=True)
+        row.operator("ffrend.setup_prism_output", text="EXR RENDER")
+        
+        row = col.row(align=True)
+        row.operator("ffrend.setup_prism_output", text="Setup Playblast mp4")

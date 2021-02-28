@@ -373,6 +373,101 @@ class MirrorFcurveModifers_OT_Operator (bpy.types.Operator):
         print ("DONE")
         self.report({'INFO'}, "Done.")
         return{"FINISHED"}
+class CopyFcurveModifiers_OT_Operator (bpy.types.Operator):
+    '''Copy Fcurve Modifiers of active pose bone to selected pose bones'''
+    bl_idname = "ffbody.copy_fcurve_modifiers"
+    bl_label = "ffbody_CopyFcurveModifiers"
+    bl_options =  {"REGISTER","UNDO"}
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and (context.object.type =="ARMATURE")):
+                return (1)
+        else:
+            return(0)
+
+    def execute(self, context):
+        bn = context.active_pose_bone
+        selBones = context.selected_pose_bones    
+        obn = getOppositeBone()
+        action = context.active_object.animation_data.action
+        groups = action.groups
+        fcurves = action.fcurves
+        # getting source channels from group and their modifiers
+        g = groups[bn.name]
+        channels = g.channels # precise 3 fcurves :D
+        # data_path and array index to get precise channel
+        # iterate channels
+        for channel in channels:
+            #iterate modifiers
+            mods = channel.modifiers
+            if len(mods) > 0:
+                for mod in mods:
+                    # apply same mod / settings to targets (selected bones)
+                    for tarbone in selBones:
+                        if tarbone != bn: # skipping self
+                            # go to related group > channel >> array index
+                            tarchannel = None
+                            if groups.find(tarbone.name) == -1:
+                                #todo: add group n channels on this bone related property
+                                # https://docs.blender.org/api/blender_python_api_2_69_1/info_quickstart.html#animation
+                                # obj.keyframe_insert(data_path="location", frame=10.0, index=2)
+                                # obj.animation_data.action.fcurves.new(data_path="location", index=2)
+                                # C.active_object.animation_data.action.fcurves.new('Rotation_Euler',action_group=tarbone.name)
+                                # C.active_object.pose.bones[tarbone.name]
+                                # C.active_object.animation_data.action.fcurves.new(C.active_object.pose.bones[tarbone.name].rotation_euler',index=0,action_group=tarbone.name)
+                                dp = 'pose.bones["' + tarbone.name + '"].' + channel.data_path.split('.')[-1]
+                                tarchannel = context.active_object.animation_data.action.fcurves.new(dp,index=channel.array_index,action_group=tarbone.name)
+                                self.report({'INFO'}, "NO TARGET GROUP FOUND ....")
+                            else:
+                                # if tar bone has group but no channel, still do it again(fuck)
+                                tgroup = groups[tarbone.name]
+                                self.report({'INFO'}, "TARGET GROUP FOUND.")
+                                if len(tgroup.channels) > 0:
+                                    for tchannel in tgroup.channels:
+                                        # if channel found, use it as D channel or create a new
+                                        if tchannel.data_path.split('.')[-1] == channel.data_path.split('.')[-1] and tchannel.array_index == channel.array_index:
+                                            tarchannel = tchannel
+                                            self.report({'INFO'}, "PRECISE CHANNEL FOUND")
+                                            self.report({'INFO'}, tchannel.data_path)
+                                            self.report({'INFO'}, str(tchannel.array_index))
+                                            break
+                                    # ideally should have channel
+                                    # going for worst case
+                                    if tarchannel == None:
+                                        self.report({'INFO'}, "NO CHANNEL, CREATING NEW ONE")
+                                        dp = 'pose.bones["' + tarbone.name + '"].' + channel.data_path.split('.')[-1]
+                                        tarchannel = context.active_object.animation_data.action.fcurves.new(dp,index=channel.array_index,action_group=tarbone.name)
+                            # NOW FINALLY GET modifier or add one
+                            tarmod = None
+                            if len(tarchannel.modifiers) > 0:
+                                # try to find by class
+                                for tmod in tarchannel.modifiers:
+                                    if tmod.type == mod.type:
+                                        tarmod = tmod
+                                        break
+                            else:
+                                # just add new one
+                                tarmod = tarchannel.modifiers.new(type=mod.type)
+                            # NOW FINALLY COPY VALUES / PROPERTIES ( BASE ON TYPE OF MODIFIER)  
+                            if tarmod.type == 'FNGENERATOR':
+                                tarmod.function_type = mod.function_type
+                                tarmod.use_additive = mod.use_additive
+                                tarmod.amplitude = mod.amplitude
+                                tarmod.phase_multiplier = mod.phase_multiplier
+                                tarmod.phase_offset = mod.phase_offset
+                                tarmod.value_offset = mod.value_offset
+                                self.report({'INFO'}, "Values Copied")
+            
+                                    
+
+
+                                        
+
+                
+        print ("DONE")
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
 class FfPollMoCap():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -409,19 +504,62 @@ class FF_PT_Anim(FfPollMoCap, bpy.types.Panel):
         row.operator("ffbody.key_deletion", text="Delete Keyframes")
 
         col = box.column(align = True)
-        col.label(text='FCurveModifiers')
+        col.label(text='FCurve Modifiers')
         row = col.row(align = True)
-        row.operator("ffbody.enable_fcurve_modifers",text="En F Modifiers(sel)")
-        row.operator("ffbody.disable_fcurve_modifers",text="Di F Modifiers(sel)")
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"endis_sel",text="selection only")
+        
 
         #col = box.column(align = True)
         #col.label(text='FCurveModifiers')
         row = col.row(align = True)
-        row.operator("ffbody.enable_fcurve_modifers_all",text="En F Modifiers(All)")
-        row.operator("ffbody.disable_fcurve_modifers_all",text="Di F Modifiers(All)")
-
         
+        row.operator("ffbody.enable_fcurve_modifers_all",text="Enable")
+        row.operator("ffbody.disable_fcurve_modifers_all",text="Disable")
+
+        col = box.column(align = True)
+        col.label(text='Add FCurve Modifiers')
+        row = col.row(align = True)
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"pos",text="pos")
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"rot",text="rot")
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"sca",text="sca")
+        row = col.row(align = True)
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"addX",text="X")
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"addY",text="Y")
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"addZ",text="Z")
+        row = col.row(align = True)
+        row.operator("ffbody.mirror_fcurve_modifers",text="Add Noise")
+        row.operator("ffbody.mirror_fcurve_modifers",text="Sine Wave")
+
         col = box.column(align = True)
         col.label(text='FCurve Mirror')
         row = col.row(align = True)
+        row.prop(bpy.context.scene.ff_anim_prop_grp,"mirror_sel",text="mirror opposite")
+        row = col.row(align = True)
         row.operator("ffbody.mirror_fcurve_modifers",text="Mirror FCurve Mod Values")
+        row = col.row(align = True)
+        row.operator("ffbody.copy_fcurve_modifiers",text="Copy FCurve Modifiers")
+        # copy_fcurve_modifiers
+
+def UpdatedFunction(self, context):
+    print ("Updating Function")
+    print (self.addX)
+    # FF_PT_Model.testValue = self.addX
+    return
+
+class FfAnimPropGrp(bpy.types.PropertyGroup):
+    endis_sel : bpy.props.BoolProperty(name ="enSel", default=True, description="Add to x axis", update=UpdatedFunction)
+    mirror_sel : bpy.props.BoolProperty(name ="mirrorSel", default=True, description="Add to y axis", update=UpdatedFunction)
+    pos : bpy.props.BoolProperty(name ="position", default=True, description="position", update=UpdatedFunction)
+    rot : bpy.props.BoolProperty(name ="rotation", default=True, description="rotation", update=UpdatedFunction)
+    sca : bpy.props.BoolProperty(name ="scale", default=True, description="scale", update=UpdatedFunction)
+    addX : bpy.props.BoolProperty(name ="add axis x", default=True, description="Add to x axis", update=UpdatedFunction)
+    addY : bpy.props.BoolProperty(name ="add axis y", default=True, description="Add to y axis", update=UpdatedFunction)
+    addZ : bpy.props.BoolProperty(name ="add axis z", default=True, description="Add to z axis", update=UpdatedFunction)
+    lockHead : bpy.props.BoolProperty(
+        name="Enable or Disable",
+        description="Lock the head position of the bone",
+        default=False
+        )
+    # custom_Boolean = bpy.props.BoolProperty(update = UpdatedFunction)
+
+bpy.utils.register_class(FfAnimPropGrp)

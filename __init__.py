@@ -24,13 +24,15 @@ bl_info = {
 
 import bpy
 from bpy import context as context
+
 from . ff_model import FfModelingPropGrp
+from . ff_anim import FfAnimPropGrp
 from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator, FF_PT_Model
 from . ff_facecap import FfFaceCapPropGrp
 from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, SetQuatRotations_OT_Operator , exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
 from . ff_anim import EnableFcurveModifers_OT_Operator, EnableFcurveModifersAll_OT_Operator, DisableFcurveModifers_OT_Operator, DisableFcurveModifersAll_OT_Operator
-from . ff_anim import MirrorFcurveModifers_OT_Operator
+from . ff_anim import MirrorFcurveModifers_OT_Operator, CopyFcurveModifiers_OT_Operator
 from . ff_rend import setupPrismOutput_OT_Operator, FF_PT_Rend
 
 
@@ -48,6 +50,7 @@ bpy.types.Scene.ff_anim_kr = bpy.props.IntProperty(default=4,min=2,max=9,step=1)
 
 # below line is special
 bpy.types.Scene.ff_model_prop_grp = bpy.props.PointerProperty(type=FfModelingPropGrp)
+bpy.types.Scene.ff_anim_prop_grp = bpy.props.PointerProperty(type=FfAnimPropGrp)
 bpy.types.Scene.ff_rig_prop_grp = bpy.props.PointerProperty(type=FfFaceCapPropGrp)
 
 
@@ -81,7 +84,7 @@ classes = (
         KeySelectionOp_OT_Operator,KeyDeletionOp_OT_Operator,
         EnableFcurveModifers_OT_Operator,EnableFcurveModifersAll_OT_Operator,
         DisableFcurveModifers_OT_Operator, DisableFcurveModifersAll_OT_Operator,
-        MirrorFcurveModifers_OT_Operator, 
+        MirrorFcurveModifers_OT_Operator, CopyFcurveModifiers_OT_Operator, 
         ReadFaceCapJson_OT_Operator, SetupFcBoneProps_OT_Operator,SetupFcSingleDriver_OT_Operator,SetupFcDrivers_OT_Operator,
         setupPrismOutput_OT_Operator, 
         FF_PT_Panel, FF_PT_Model, FF_PT_Rig, FF_PT_Anim, FF_PT_Rend)
