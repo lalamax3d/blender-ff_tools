@@ -105,8 +105,9 @@ def renderPreviewMp4(context,res=100):
     filename = bfp.name
     filepath = bfp.parent
     shotdir = bfp.parent.parent.parent.parent
+    stepdir = pcore.getCurrentFileName().split('/')[-2]
     if shotdir.is_dir():
-        rendDir = shotdir.joinpath("Playblasts")
+        rendDir = shotdir.joinpath("Playblasts",stepdir)
     # now get file version string
     verInfo = filename.split(pcore.filenameSeparator)[4] # .sequenceSeparato
     verFormat = pcore.versionFormat
