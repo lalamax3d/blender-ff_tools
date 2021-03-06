@@ -88,10 +88,50 @@ def renderPngPasses(context):
             iteration = iteration + 1
     # create links
     # C.scene.node_tree.links.new('','')
-    # fix zdepth
+    # todo zdepth
+    # todo AOV's
     
     # make sure compositing is ticked 
+def renderPreviewMp4(context,res=100):
+    ''' 
+        this function will setup preview mp4
+    '''
+    pcore.projectPath
+    pcore.scenePath # points to workflow dir
+    pcore.shotPath # points to shots folder
+    pcore.fileInPipeline(bpy.data.filepath)
+    bfp = Path(bpy.data.filepath) 
+    basefilename = bpy.path.basename(bpy.data.filepath).split('.')[0]
+    filename = bfp.name
+    filepath = bfp.parent
+    shotdir = bfp.parent.parent.parent.parent
+    if shotdir.is_dir():
+        rendDir = shotdir.joinpath("Playblasts")
+    # now get file version string
+    verInfo = filename.split(pcore.filenameSeparator)[4] # .sequenceSeparato
+    verFormat = pcore.versionFormat
+    
+    # create / output dir exists
+    print ("Preview DIR EXPECTED PATH:", rendDir)
+    print ("Preview DIR FOUND:", rendDir.exists())
+    #renderer = context.scene.render.engine #.split('_')[1]
+    rendDir = rendDir.joinpath(verInfo)
+    rendDir.mkdir(parents=True, exist_ok=True) # will create EEVEE or CYCLES Directory
 
+    # set relative path in output (main area)
+    #fo = C.scene.render.filepath
+    #bpy.path.abspath, to replace os.path.abspath
+    #bpy.path.relpath, to replace os.path.relpath
+    #context.scene.render.filepath = rendDir.as_posix() + '/'+verInfo+'/beauty/image_'
+    context.scene.render.filepath = rendDir.as_posix() + '/'+ basefilename + '.mp4'
+    context.scene.render.image_settings.file_format = 'FFMPEG'
+    context.scene.render.ffmpeg.format = 'MPEG4'
+    context.scene.render.ffmpeg.constant_rate_factor = 'HIGH'
+    context.scene.render.ffmpeg.gopsize = 4
+    context.scene.render.resolution_percentage = 50
+
+
+    
 def useCompositing_toggle():
     C.scene.render.use_compositing = not C.scene.render.use_compositing
  
@@ -131,6 +171,24 @@ class setupPrismOutput_OT_Operator (bpy.types.Operator):
         renderPngPasses(context)
         self.report({'INFO'}, "Done.")
         return{"FINISHED"}
+class setupPrismPreview_OT_Operator (bpy.types.Operator):
+    '''setup local mp4 preview'''
+    bl_idname = "ffrend.setup_prism_preview"
+    bl_label = "ffrend_setupPrismPreview"
+    bl_options =  {"REGISTER","UNDO"}
+    '''
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and context.object.type =="ARMATURE" and ('rig_id' in context.object.data)):
+                return (1)
+        else:
+            return(0)
+    '''
+    def execute(self, context):
+        renderPreviewMp4(context)
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
 class FfPollRend():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -159,4 +217,4 @@ class FF_PT_Rend(FfPollRend, bpy.types.Panel):
         row.operator("ffrend.setup_prism_output", text="EXR RENDER")
         
         row = col.row(align=True)
-        row.operator("ffrend.setup_prism_output", text="Setup Playblast mp4")
+        row.operator("ffrend.setup_prism_preview", text="Setup Playblast mp4")
