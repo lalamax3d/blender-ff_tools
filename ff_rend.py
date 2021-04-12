@@ -40,10 +40,15 @@ def renderPngPasses(context):
     #bpy.path.abspath, to replace os.path.abspath
     #bpy.path.relpath, to replace os.path.relpath
     context.scene.render.filepath = rendDir.as_posix() + '/'+verInfo+'/beauty/image_'
-
+    context.scene.render.image_settings.file_format = 'PNG'
+    context.scene.render.image_settings.color_mode = 'RGBA'
+    context.scene.render.image_settings.color_depth = '8'
+    context.scene.render.use_file_extension = True
+    context.scene.render.use_compositing = True
+    context.scene.render.resolution_percentage = 100
     # remove all fileoutput nodes in comp area
+    context.scene.use_nodes = True
     outputNodes = [x for x in context.scene.node_tree.nodes if x.type == 'OUTPUT_FILE']
-    print ('OUTPUT NODES COUNT:', len(outputNodes))
     for node in outputNodes:
         context.scene.node_tree.nodes.remove(node)
     # setup new output comp nodes in comp area
@@ -54,13 +59,13 @@ def renderPngPasses(context):
     if len(rendLyrNodes) ==1:
         rendLyrNode = rendLyrNodes[0]
     else:
-        #create new render layer node
-        pass
+        rendLyrNode = rendLyrNodes[0]
     # get output passes list from node or blender
     #rendLyrNode.outputs # all possible passes here (todo)
     tree = context.scene.node_tree
     print ("TREE:", tree)
-    np = rendLyrNode.viewLocation
+    #np = rendLyrNode.viewLocation
+    np = rendLyrNode.location # since 2.92 (above failed)
     iteration = 1
     renderPasses = {
         "DiffCol": context.scene.view_layers[0].use_pass_diffuse_color,
@@ -88,10 +93,20 @@ def renderPngPasses(context):
             iteration = iteration + 1
     # create links
     # C.scene.node_tree.links.new('','')
-    # todo zdepth
-    # todo AOV's
-    
-    # make sure compositing is ticked 
+    aovs = context.scene.view_layers[0].aovs
+    for aov in aovs:
+        print (aov.name)
+        # create output node for AOV
+        n = context.scene.node_tree.nodes.new(type='CompositorNodeOutputFile')
+        tree.links.new(rendLyrNode.outputs[aov.name], n.inputs[0])
+        n.base_path =  rendDir.as_posix() + '/'+verInfo+'/'+aov.name
+        npx = np.x + 800
+        npy = np.y - (iteration * 100)
+        n.location = ((npx,npy))
+        iteration = iteration + 1
+    # todo fix depth reduction
+    # todo make sure compositing is ticked
+    # todo fix all layers ( currently 0 is hardcoded :( )
 def renderPreviewMp4(context,res=100):
     ''' 
         this function will setup preview mp4
@@ -190,6 +205,24 @@ class setupPrismPreview_OT_Operator (bpy.types.Operator):
         renderPreviewMp4(context)
         self.report({'INFO'}, "Done.")
         return{"FINISHED"}
+class setupBackGroundRender_OT_Operator (bpy.types.Operator):
+    '''setup background render command'''
+    bl_idname = "ffrend.setup_bg_render"
+    bl_label = "ffrend_setupBackGroundRender"
+    bl_options =  {"REGISTER","UNDO"}
+    '''
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            if ((context.object) and context.object.type =="ARMATURE" and ('rig_id' in context.object.data)):
+                return (1)
+        else:
+            return(0)
+    '''
+    def execute(self, context):
+        renderPreviewMp4(context)
+        self.report({'INFO'}, "Done.")
+        return{"FINISHED"}
 class FfPollRend():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
@@ -219,3 +252,5 @@ class FF_PT_Rend(FfPollRend, bpy.types.Panel):
         
         row = col.row(align=True)
         row.operator("ffrend.setup_prism_preview", text="Setup Playblast mp4")
+        row = col.row(align=True)
+        row.operator("ffrend.setup_bg_render", text="BG Render Cmd")
