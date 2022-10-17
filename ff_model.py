@@ -2,7 +2,8 @@ import bpy
 import os
 from bpy import context as context
 from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_OT_Operator
-
+from bpy import context as C
+from bpy import data as D
 
 def isTexIssue(texImage):
     ''' texImage is actually node
@@ -20,6 +21,47 @@ def isTexIssue(texImage):
         #basefile = os.path.basename(actualFile)
     else:
         return False
+
+def makeAssetFromChildren(grpObj,alignPivotToBase=False,applyScale=True,applyRot=True):
+    parentIsNull = grpObj.parent
+    if parentIsNull == None:
+        print ("Seems obj in world")
+        # deselect everything
+        bpy.ops.object.select_all(action='DESELECT')
+        # selecting grpObj
+        bpy.data.objects[grpObj.name].select_set(True)
+        # selecting all children
+        bpy.ops.object.select_hierarchy(direction='CHILD', extend=False)
+        selObjs = bpy.context.selected_objects
+        print (len(selObjs))
+        bpy.ops.object.select_all(action='DESELECT')
+        # now iterate selObjs and select only meshes
+        for each in selObjs:
+            if each.type == 'MESH':
+                each.select_set(True)
+        # now all meshes are selected.
+        bpy.ops.object.join()
+        newObj = bpy.context.active_object
+        # check parent helper name to decide new name
+        if grpObj.name.find('_grp') != -1:
+            newObj.name = grpObj.name.split('_grp')[0]
+        else:
+            newObj.name = grpObj.name + "_obj"
+        # now unparent with keep transform, then apply transform.
+        bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+        if applyScale:
+            bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+        if applyRot:
+            bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+        # now marking as an asset
+        #bpy.ops.asset.mark()
+        # now deselect
+        bpy.ops.object.select_all(action='DESELECT')
+
+
+    else:
+        print ("This obj is under some heirarchy, Make sure..")
 
 class SelectHalfMesh_OT_Operator (bpy.types.Operator):
     '''Select half mesh vertices'''
@@ -166,12 +208,33 @@ class FixDuplicateMaterials_OT_Operator (bpy.types.Operator):
         else :
             self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
+class CreateAssetsFromSelection_OT_Operator (bpy.types.Operator):
+    '''convert selected heirarchies to single meshes\nto easily create assets'''
+    bl_idname = "ffgen.create_assets_from_selection"
+    bl_label = "ffgen_CreateAssetsFromSelection"
+    bl_options =  {"REGISTER","UNDO"}
+
+    # @classmethod
+    # def poll(cls,context):
+    #     if context.area.type=='VIEW_3D':
+    #         return (1)
+    #     else:
+    #         return(0)
+    def execute(self, context):
+        selObjects = context.selected_objects
+        bpy.ops.object.select_all(action='DESELECT')
+        for each in selObjects:
+            makeAssetFromChildren(each)
+            #self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}
 class FfPollGen():
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'TOOLS'
     @classmethod
     def poll(cls, context):
         return(context.scene.ff_general == True)
+
+
 
 class FF_PT_Model(FfPollGen, bpy.types.Panel):
     bl_idname = "FF_PT_Model"
@@ -180,16 +243,8 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
 
-    # testValue = 5
-
     def draw(self, context):
-        skSrcObj = context.selected_objects[0]
-        skb = 0
-        if skSrcObj.type == 'MESH':
-            sk = skSrcObj.data.shape_keys
-            if sk:
-                skb = sk.key_blocks
-                skb = len(skb) - 1
+        #active_obj = context.active_object
         layout = self.layout
 
         # Modeling
@@ -206,6 +261,12 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row.operator("ffgen.find_missing_files", text="Find Missing Files")
         row = col1.row(align = True)
         row.operator("ffgen.fix_duplicate_materials", text="Fix Duplicate Mats")
+        # Assets
+        col3 = box_rg.column(align = True)
+        col3.label(text='Asset Creation')
+        row = col3.row(align = True)
+        row.operator("ffgen.create_assets_from_selection", text="Create Assets From Selections")
+        # row.operator("ffgen.sk_animate_all", text="Animate All")
         # SHAPEKEYS
         col2 = box_rg.column(align = True)
         col2.label(text='Shapekey Helpers')
@@ -219,7 +280,7 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row = col2.row(align = True)
         row.prop(bpy.context.scene.ff_model_prop_grp,"sk_filterStr",text="filter")
         row = col2.row(align = True)
-        row.label(text="Info: %s Shapekeys Count:%s"%(skSrcObj.name,skb))
+        # row.label(text="Info: %s Shapekeys Count:%s"%(skSrcObj.name,skb))
         # row = col2.row(align = True)
         # row.label(text="Info2: %s "%(self.testValue))
         row = col2.row(align = True)
