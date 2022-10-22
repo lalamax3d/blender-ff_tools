@@ -208,6 +208,50 @@ class FixDuplicateMaterials_OT_Operator (bpy.types.Operator):
         else :
             self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
+class UpdateSelectionFilterClass_OT_Operator (bpy.types.Operator):
+    '''keep the specific class, deselect others'''
+    bl_idname = "ffgen.update_selection_filter_class"
+    bl_label = "ffgen_UpdateSelectionFilterClass"
+    bl_options =  {"REGISTER","UNDO"}
+
+    # @classmethod
+    # def poll(cls,context):
+    #     if context.area.type=='VIEW_3D':
+    #         return (1)
+    #     else:
+    #         return(0)
+    def execute(self, context):
+        selObjects = context.selected_objects
+        #bpy.ops.object.select_all(action='DESELECT')
+        keepClass = bpy.context.scene.ff_model_prop_grp.sel_filterStr
+        print (keepClass)
+        for each in selObjects:
+            if each.type != keepClass:
+                each.select_set(False)
+            #self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}
+class UpdateDeselectionFilterClass_OT_Operator (bpy.types.Operator):
+    '''keep the specific class, deselect others'''
+    bl_idname = "ffgen.update_deselection_filter_class"
+    bl_label = "ffgen_UpdateDeselectionFilterClass"
+    bl_options =  {"REGISTER","UNDO"}
+
+    # @classmethod
+    # def poll(cls,context):
+    #     if context.area.type=='VIEW_3D':
+    #         return (1)
+    #     else:
+    #         return(0)
+    def execute(self, context):
+        selObjects = context.selected_objects
+        #bpy.ops.object.select_all(action='DESELECT')
+        ignoreClass = bpy.context.scene.ff_model_prop_grp.sel_filterStr
+        print (ignoreClass)
+        for each in selObjects:
+            if each.type == ignoreClass:
+                each.select_set(False)
+            #self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}
 class CreateAssetsFromSelection_OT_Operator (bpy.types.Operator):
     '''convert selected heirarchies to single meshes\nto easily create assets'''
     bl_idname = "ffgen.create_assets_from_selection"
@@ -261,12 +305,20 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row.operator("ffgen.find_missing_files", text="Find Missing Files")
         row = col1.row(align = True)
         row.operator("ffgen.fix_duplicate_materials", text="Fix Duplicate Mats")
+        # Selection
+        col2 = box_rg.column(align = True)
+        col2.label(text='Selection Filter')
+        row = col2.row(align = True)
+        row.prop(bpy.context.scene.ff_model_prop_grp,"sel_filterStr",text="filter")
+        row = col2.row(align = True)
+        row.operator("ffgen.update_selection_filter_class", text="Keep")
+        row.operator("ffgen.update_deselection_filter_class", text="Ignore")
         # Assets
         col3 = box_rg.column(align = True)
         col3.label(text='Asset Creation')
         row = col3.row(align = True)
-        row.operator("ffgen.create_assets_from_selection", text="Create Assets From Selections")
-        # row.operator("ffgen.sk_animate_all", text="Animate All")
+        row.operator("ffgen.create_assets_from_selection", text="Heirarchy Under Empty")
+        row.operator("ffgen.create_assets_from_selection", text="Heirarchy Under Mesh")
         # SHAPEKEYS
         col2 = box_rg.column(align = True)
         col2.label(text='Shapekey Helpers')
@@ -295,6 +347,11 @@ def UpdatedFunction(self, context):
 # from . ff_model import MyPropertyGroup
 
 class FfModelingPropGrp(bpy.types.PropertyGroup):
+    sel_filterStr : bpy.props.StringProperty(
+        name ="filter to update selection \nAfter changing filter text, hit enter key to refresh",
+        default='',
+        description="selection filter",
+        update=UpdatedFunction)
     sk_filterStr : bpy.props.StringProperty(
         name ="Empty Filter will bind all shapekeys to selected Bone \nAfter changing filter text, hit enter key to refresh",
         default='',
