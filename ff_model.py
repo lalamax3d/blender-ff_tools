@@ -58,8 +58,45 @@ def makeAssetFromChildren(grpObj,alignPivotToBase=False,applyScale=True,applyRot
         #bpy.ops.asset.mark()
         # now deselect
         bpy.ops.object.select_all(action='DESELECT')
-
-
+    else:
+        print ("This obj is under some heirarchy, Make sure..")
+def makeAssetFromMeshAndChildren(grpObj,alignPivotToBase=False,applyScale=True,applyRot=True):
+    parentIsNull = grpObj.parent
+    if parentIsNull == None:
+        print ("Seems obj in world")
+        # deselect everything
+        bpy.ops.object.select_all(action='DESELECT')
+        # selecting grpObj
+        bpy.data.objects[grpObj.name].select_set(True)
+        # selecting all children
+        bpy.ops.object.select_hierarchy(direction='CHILD', extend=True)
+        selObjs = bpy.context.selected_objects
+        print (len(selObjs))
+        bpy.ops.object.select_all(action='DESELECT')
+        # now iterate selObjs and select only meshes
+        for each in selObjs:
+            if each.type == 'MESH':
+                each.select_set(True)
+        # now all meshes are selected.
+        bpy.context.view_layer.objects.active=grpObj
+        bpy.ops.object.join()
+        newObj = bpy.context.active_object
+        # check parent helper name to decide new name
+        # if grpObj.name.find('_grp') != -1:
+        #     newObj.name = grpObj.name.split('_grp')[0]
+        # else:
+        #     newObj.name = grpObj.name + "_obj"
+        # now unparent with keep transform, then apply transform.
+        #bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
+        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='MEDIAN')
+        if applyScale:
+            bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+        if applyRot:
+            bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
+        # now marking as an asset
+        #bpy.ops.asset.mark()
+        # now deselect
+        bpy.ops.object.select_all(action='DESELECT')
     else:
         print ("This obj is under some heirarchy, Make sure..")
 
@@ -231,7 +268,7 @@ class UpdateSelectionFilterClass_OT_Operator (bpy.types.Operator):
             #self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
 class UpdateDeselectionFilterClass_OT_Operator (bpy.types.Operator):
-    '''keep the specific class, deselect others'''
+    '''ignore the specific class, deselect others'''
     bl_idname = "ffgen.update_deselection_filter_class"
     bl_label = "ffgen_UpdateDeselectionFilterClass"
     bl_options =  {"REGISTER","UNDO"}
@@ -252,10 +289,10 @@ class UpdateDeselectionFilterClass_OT_Operator (bpy.types.Operator):
                 each.select_set(False)
             #self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
-class CreateAssetsFromSelection_OT_Operator (bpy.types.Operator):
-    '''convert selected heirarchies to single meshes\nto easily create assets'''
-    bl_idname = "ffgen.create_assets_from_selection"
-    bl_label = "ffgen_CreateAssetsFromSelection"
+class CreateAssetsFromSelectionEmpty_OT_Operator (bpy.types.Operator):
+    '''convert selected heirarchies to single meshes\n1-selecting child meshes n join\n2-apply rot/scale,unparent,keeptransform,rename'''
+    bl_idname = "ffgen.create_assets_from_selection_empty"
+    bl_label = "ffgen_CreateAssetsFromSelectionEmpty"
     bl_options =  {"REGISTER","UNDO"}
 
     # @classmethod
@@ -269,6 +306,25 @@ class CreateAssetsFromSelection_OT_Operator (bpy.types.Operator):
         bpy.ops.object.select_all(action='DESELECT')
         for each in selObjects:
             makeAssetFromChildren(each)
+            #self.report({'INFO'}, "Select some mesh object")
+        return{"FINISHED"}
+class CreateAssetsFromSelectionMesh_OT_Operator (bpy.types.Operator):
+    '''convert selected Mesh and related child objs\n1-selecting child meshes n join\n2-apply rot/scale'''
+    bl_idname = "ffgen.create_assets_from_selection_mesh"
+    bl_label = "ffgen_CreateAssetsFromSelectionMesh"
+    bl_options =  {"REGISTER","UNDO"}
+
+    # @classmethod
+    # def poll(cls,context):
+    #     if context.area.type=='VIEW_3D':
+    #         return (1)
+    #     else:
+    #         return(0)
+    def execute(self, context):
+        selObjects = context.selected_objects
+        bpy.ops.object.select_all(action='DESELECT')
+        for each in selObjects:
+            makeAssetFromMeshAndChildren(each)
             #self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
 class FfPollGen():
@@ -317,8 +373,8 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         col3 = box_rg.column(align = True)
         col3.label(text='Asset Creation')
         row = col3.row(align = True)
-        row.operator("ffgen.create_assets_from_selection", text="Heirarchy Under Empty")
-        row.operator("ffgen.create_assets_from_selection", text="Heirarchy Under Mesh")
+        row.operator("ffgen.create_assets_from_selection_empty", text="Heirarchy Under Empty")
+        row.operator("ffgen.create_assets_from_selection_mesh", text="Heirarchy Under Mesh")
         # SHAPEKEYS
         col2 = box_rg.column(align = True)
         col2.label(text='Shapekey Helpers')
