@@ -5,6 +5,17 @@ from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_
 from bpy import context as C
 from bpy import data as D
 
+
+def updateSceneMatsNormalStrength(self,context):
+    for mat in bpy.data.materials:
+        ndt = mat.node_tree
+        if ndt:
+            nodes = mat.node_tree.nodes
+            for node in nodes:
+                if node.type=='NORMAL_MAP':
+                    node.inputs[0].default_value = self.sceneMatsNormalStrength
+
+
 def isTexIssue(texImage):
     ''' texImage is actually node
     function will return True if files doesn't exists on disk
@@ -178,7 +189,36 @@ class ReMirror_OT_Operator (bpy.types.Operator):
         else :
             self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
+class UpdateSceneMatsNormalMapStrength_OT_Operator (bpy.types.Operator):
+    '''Find Missing Files In Selected Objects\nIf Nothing is selected, whole scene checked'''
+    bl_idname = "ffgen.update_scene_mats_normal_map_strength"
+    bl_label = "ffgen_UpdateSceneMatsNormalMapStrength"
+    bl_options =  {"REGISTER","UNDO"}
 
+    @classmethod
+    def poll(cls,context):
+        if context.area.type=='VIEW_3D':
+            return (1)
+        else:
+            return(0)
+    def execute(self, context):
+        objs = context.selected_objects
+        if len(objs) == 0:
+            objs = bpy.data.objects
+        # NOW ITERATING OBJECTS
+        for o in objs:
+            # Iterate over all of the current object's material slots
+            print ("INSPECTING OBJECT: ",o.name)
+            for i in range(len(o.material_slots)):
+                mat = o.material_slots[i].material
+                if mat:
+                    print ("INSPECTING MATERIAL: ",mat.name)
+                    for n in mat.node_tree.nodes:
+                        if n.type == 'NORMAL_MAP':
+                            n.inputs[0].default_value = bpy.context.scene.ff_model_prop_grp.nor_strength
+        self.report({'INFO'}, "Done")
+        return{"FINISHED"}
+        
 class FindMissingFiles_OT_Operator (bpy.types.Operator):
     '''Find Missing Files In Selected Objects\nIf Nothing is selected, whole scene checked'''
     bl_idname = "ffgen.find_missing_files"
@@ -361,6 +401,11 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row.operator("ffgen.find_missing_files", text="Find Missing Files")
         row = col1.row(align = True)
         row.operator("ffgen.fix_duplicate_materials", text="Fix Duplicate Mats")
+        row = col1.row(align = True)
+        row.prop(bpy.context.scene.ff_model_prop_grp,"nor_strength",text="normal value")
+        row = col1.row(align = True)
+        row.operator("ffgen.update_scene_mats_normal_map_strength", text="Scene")
+        # row.operator("ffgen.create_assets_from_selection_mesh", text="Selection")
         # Selection
         col2 = box_rg.column(align = True)
         col2.label(text='Selection Filter')
@@ -403,6 +448,7 @@ def UpdatedFunction(self, context):
 # from . ff_model import MyPropertyGroup
 
 class FfModelingPropGrp(bpy.types.PropertyGroup):
+    nor_strength: bpy.props.FloatProperty(default=.3)
     sel_filterStr : bpy.props.StringProperty(
         name ="filter to update selection \nAfter changing filter text, hit enter key to refresh",
         default='',
