@@ -76,7 +76,7 @@ class SkZeroAll_OT_Operator (bpy.types.Operator):
 
     @classmethod
     def poll(cls,context):
-        if context.area.type=='VIEW_3D':
+        if context.area.type=='VIEW_3D' and context.active_object != None:
             if (context.active_object.type=='MESH') and (context.active_object.data.shape_keys !='None'):
                 return (1)
         else:
@@ -102,7 +102,7 @@ class SkAnimateAll_OT_Operator (bpy.types.Operator):
 
     @classmethod
     def poll(cls,context):
-        if context.area.type=='VIEW_3D':
+        if context.area.type=='VIEW_3D' and context.active_object != None:
             if  (context.active_object.type=='MESH') and (context.active_object.data.shape_keys !='None'):
                 return (1)
         else:

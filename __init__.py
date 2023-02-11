@@ -27,7 +27,7 @@ from bpy import context as context
 
 from . ff_model import FfModelingPropGrp
 from . ff_anim import FfAnimPropGrp
-from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator,UpdateSelectionFilterClass_OT_Operator,UpdateDeselectionFilterClass_OT_Operator,CreateAssetsFromSelectionEmpty_OT_Operator,CreateAssetsFromSelectionMesh_OT_Operator, UpdateSceneMatsNormalMapStrength_OT_Operator, FF_PT_Model
+from . ff_model import SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator,UpdateSelectionFilterClass_OT_Operator,UpdateDeselectionFilterClass_OT_Operator,CreateAssetsFromSelectionEmpty_OT_Operator,CreateAssetsFromSelectionMesh_OT_Operator, UpdateSceneMatsNormalMapStrength_OT_Operator, BulkImportClass_OT_Operator, FF_PT_Model
 from . ff_facecap import FfFaceCapPropGrp
 from . ff_rig import UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator, SetQuatRotations_OT_Operator , exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator, FF_PT_Rig
 from . ff_anim import CopyIklegs_OT_Operator, CopyIkArms_OT_Operator, KeySelectionOp_OT_Operator, KeyDeletionOp_OT_Operator, FF_PT_Anim
@@ -76,7 +76,7 @@ class FF_PT_Panel(bpy.types.Panel):
         row.prop(bpy.context.scene,"ff_rend",text="Rend",icon="IMAGE_PLANE")
 
 classes = (
-        SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator,CreateAssetsFromSelectionEmpty_OT_Operator,CreateAssetsFromSelectionMesh_OT_Operator,UpdateSelectionFilterClass_OT_Operator,UpdateDeselectionFilterClass_OT_Operator,UpdateSceneMatsNormalMapStrength_OT_Operator,
+        SelectHalfMesh_OT_Operator, ReMirror_OT_Operator, FindMissingFiles_OT_Operator, FixDuplicateMaterials_OT_Operator,CreateAssetsFromSelectionEmpty_OT_Operator,CreateAssetsFromSelectionMesh_OT_Operator,UpdateSelectionFilterClass_OT_Operator,UpdateDeselectionFilterClass_OT_Operator,UpdateSceneMatsNormalMapStrength_OT_Operator,BulkImportClass_OT_Operator,
         SkZeroAll_OT_Operator, SkAnimateAll_OT_Operator, SkBindToBone_OT_Operator,
         UseSingleSideControls_OT_Operator, SelectOneSidedObjects_OT_Operator, SetEulerRotations_OT_Operator,SetQuatRotations_OT_Operator,
         exportDriversToJson_OT_Operator, importDriversFromJson_OT_Operator,

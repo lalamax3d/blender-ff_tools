@@ -5,6 +5,18 @@ from . ff_sk import SkZeroAll_OT_Operator,SkAnimateAll_OT_Operator,SkBindToBone_
 from bpy import context as C
 from bpy import data as D
 
+#Recursivly transverse layer_collection for a particular name
+
+def recurLayerCollection(layerColl, collName):
+    found = None
+    if (layerColl.name == collName):
+        return layerColl
+    for layer in layerColl.children:
+        found = recurLayerCollection(layer, collName)
+        if found:
+            return found
+
+# above function was taken from here:https://blender.stackexchange.com/questions/127403/change-active-collection
 
 def updateSceneMatsNormalStrength(self,context):
     for mat in bpy.data.materials:
@@ -119,7 +131,7 @@ class SelectHalfMesh_OT_Operator (bpy.types.Operator):
 
     @classmethod
     def poll(cls,context):
-        if context.area.type=='VIEW_3D':
+        if context.area.type=='VIEW_3D' and context.active_object != None:
             if ((context.active_object.type=='MESH' ) and ( context.object.mode=='OBJECT' or context.object.mode == 'EDIT')):
                 return (1)
         else:
@@ -157,7 +169,7 @@ class ReMirror_OT_Operator (bpy.types.Operator):
 
     @classmethod
     def poll(cls,context):
-        if context.area.type=='VIEW_3D':
+        if context.area.type=='VIEW_3D' and context.active_object != None:
             if ((context.active_object.type=='MESH' ) and (context.object.mode=='OBJECT' or context.object.mode == 'EDIT')):
                 return (1)
         else:
@@ -285,6 +297,60 @@ class FixDuplicateMaterials_OT_Operator (bpy.types.Operator):
         else :
             self.report({'INFO'}, "Select some mesh object")
         return{"FINISHED"}
+class BulkImportClass_OT_Operator (bpy.types.Operator):
+    '''import all files from subfolders'''
+    bl_idname = "ffgen.bulk_import_sudirs_class"
+    bl_label = "ffgen_BulkImportSubdirsClass"
+    bl_options =  {"REGISTER","UNDO"}
+
+    # @classmethod
+    # def poll(cls,context):
+    #     if context.area.type=='VIEW_3D':
+    #         return (1)
+    #     else:
+    #         return(0)
+    def execute(self, context):
+        selObjects = context.selected_objects
+        #bpy.ops.object.select_all(action='DESELECT')
+        from pathlib import Path
+        folder = Path(bpy.context.scene.ff_model_prop_grp.bulkImportDir)
+        fileType = bpy.context.scene.ff_model_prop_grp.bulkImportFileType
+        # folder = Path(r"C:\path\to\your\folder")
+        fbx_files = [f for f in folder.glob("**/*."+fileType) if f.is_file()]
+        for fbx_file in fbx_files:
+            bpy.ops.object.select_all(action='DESELECT')
+
+            # creating collection (named after the file)
+            collectionName = str(fbx_file).split('/')[-1].split('.')[0]
+            print ('collectionName', collectionName)
+            # New Collection
+            # bpy.ops.collection.create(name='Collection')
+            my_coll = bpy.data.collections.new(collectionName)
+            # Add collection to scene collection
+            bpy.context.scene.collection.children.link(my_coll)
+            print ("Creating Collection: ", collectionName)
+            # making it active
+            #Change the Active LayerCollection to 'My Collection'
+            layer_collection = bpy.context.view_layer.layer_collection
+            layerColl = recurLayerCollection(layer_collection, collectionName)
+            bpy.context.view_layer.active_layer_collection = layerColl
+
+            print ('Importing..>> ', fbx_file)
+            bpy.ops.import_scene.fbx(filepath=str(fbx_file))
+            
+
+            
+
+            # Get cube object
+            # obj = bpy.context.scene.objects.get("Cube")
+
+            # for obj in bpy.context.selected_objects:
+            #     # obj.name = fbx_file.stem
+            #     my_coll.objects.link(obj)
+            # if obj:
+                # Link the cube 
+        
+        return{"FINISHED"}
 class UpdateSelectionFilterClass_OT_Operator (bpy.types.Operator):
     '''keep the specific class, deselect others'''
     bl_idname = "ffgen.update_selection_filter_class"
@@ -406,6 +472,14 @@ class FF_PT_Model(FfPollGen, bpy.types.Panel):
         row = col1.row(align = True)
         row.operator("ffgen.update_scene_mats_normal_map_strength", text="Scene")
         # row.operator("ffgen.create_assets_from_selection_mesh", text="Selection")
+        # IMPORT BULK
+        col2 = box_rg.column(align = True)
+        col2.label(text='BULK IMPORT')
+        row = col2.row(align = True)
+        row.prop(bpy.context.scene.ff_model_prop_grp,"bulkImportDir",text="Path")
+        row = col2.row(align = True)
+        row.prop(bpy.context.scene.ff_model_prop_grp,"bulkImportFileType",text="FileType")
+        row.operator("ffgen.bulk_import_sudirs_class", text="TEST RUN")
         # Selection
         col2 = box_rg.column(align = True)
         col2.label(text='Selection Filter')
@@ -449,6 +523,16 @@ def UpdatedFunction(self, context):
 
 class FfModelingPropGrp(bpy.types.PropertyGroup):
     nor_strength: bpy.props.FloatProperty(default=.3)
+    bulkImportDir : bpy.props.StringProperty(
+        name ="file extension to import",
+        default='/home/user/Downloads/',
+        description="file extension to import",
+        update=UpdatedFunction)
+    bulkImportFileType : bpy.props.StringProperty(
+        name ="file extension to import",
+        default='fbx',
+        description="file extension to import",
+        update=UpdatedFunction)
     sel_filterStr : bpy.props.StringProperty(
         name ="filter to update selection \nAfter changing filter text, hit enter key to refresh",
         default='',
